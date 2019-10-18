@@ -74,6 +74,20 @@ deps_buster_clang_8: deps_debian
 	apt-get update
 	apt-get install -y clang-8 llvm-8-dev
 
+# Out-of-source build
+
+build_outofsrc:
+	rm -rf build CMakeCache.txt
+	mkdir build
+	cd build && \
+		cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_WERROR=ON ${CMAKE_EXTRA_PARAMS} && \
+		make -j
+
+test_outofsrc_no_deps: build_outofsrc
+	cd build && make test-force $(TEST_RUN_EXTRA_PARAMS)
+
+test_outofsrc: deps_debian test_outofsrc_no_deps
+
 # Release
 
 build_debian:

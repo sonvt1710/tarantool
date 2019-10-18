@@ -98,6 +98,11 @@ variables:
 
 # Tests
 
+out_of_source:
+  <<: *docker_test_definition
+  script:
+    - ${GITLAB_MAKE} test_outofsrc_no_deps
+
 release:
   <<: *docker_test_definition
   script:
