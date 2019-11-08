@@ -6,6 +6,8 @@ DOCKER_IMAGE?=packpack/packpack:debian-stretch
 TEST_RUN_EXTRA_PARAMS?=
 MAX_FILES?=65534
 MAX_PROC?=2500
+STARTED_AT_PATH=$(shell pwd)
+OUT_OF_SRC_BLD_PATH=/tmp/rw_bins
 
 all: package
 
@@ -77,14 +79,16 @@ deps_buster_clang_8: deps_debian
 # Out-of-source build
 
 build_outofsrc:
-	rm -rf build CMakeCache.txt
-	mkdir build
-	cd build && \
-		cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_WERROR=ON ${CMAKE_EXTRA_PARAMS} && \
+	rm -rf ${OUT_OF_SRC_BLD_PATH} && \
+		mkdir ${OUT_OF_SRC_BLD_PATH} && \
+		cd ${OUT_OF_SRC_BLD_PATH} && \
+		cmake ${STARTED_AT_PATH} \
+			-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+			-DENABLE_WERROR=ON ${CMAKE_EXTRA_PARAMS} && \
 		make -j
 
 test_outofsrc_no_deps: build_outofsrc
-	cd build && make test-force $(TEST_RUN_EXTRA_PARAMS)
+	cd ${OUT_OF_SRC_BLD_PATH} && make test-force
 
 test_outofsrc: deps_debian test_outofsrc_no_deps
 

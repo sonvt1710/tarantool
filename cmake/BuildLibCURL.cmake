@@ -56,10 +56,10 @@ macro(curl_build)
         DOWNLOAD_DIR ${LIBCURL_BINARY_DIR}
         TMP_DIR ${LIBCURL_BINARY_DIR}/tmp
         STAMP_DIR ${LIBCURL_BINARY_DIR}/stamp
-        BINARY_DIR ${LIBCURL_BINARY_DIR}
+        BINARY_DIR ${LIBCURL_BINARY_DIR}/curl
         CONFIGURE_COMMAND
-            cd <SOURCE_DIR> && ./buildconf &&
-            cd <BINARY_DIR> && <SOURCE_DIR>/configure
+            rm -rf <BINARY_DIR> && cp -rf <SOURCE_DIR> <BINARY_DIR> &&
+            cd <BINARY_DIR> && ./buildconf && ./configure
                 # Pass the same toolchain as is used to build
                 # tarantool itself, because they can be
                 # incompatible.

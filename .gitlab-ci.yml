@@ -99,9 +99,11 @@ variables:
 # Tests
 
 out_of_source:
-  <<: *docker_test_definition
+  stage: test
+  tags:
+    - deploy_test
   script:
-    - ${GITLAB_MAKE} test_outofsrc_no_deps
+    - docker run -w /tmp/ro_src --mount type=bind,source="${PWD}",target=/tmp/ro_src,readonly,bind-propagation=rslave -i registry.gitlab.com/tarantool/tarantool/testing/debian-stretch:latest make -f /tmp/ro_src/.travis.mk test_outofsrc_no_deps
 
 release:
   <<: *docker_test_definition
