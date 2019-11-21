@@ -1582,4 +1582,30 @@ test_run:wait_log('default', '00000030:.*', nil, 10)
 -- we expect nothing below, so don't wait
 test_run:grep_log('default', '00000040:.*')
 
+-- gh-4138 Check getaddrinfo() error from connect() only. Error
+-- code and error message returned by getaddrinfo() depends on
+-- system's gai_strerror().
+test_run:cmd("setopt delimiter ';'")
+function check_err(err)
+-- EAI_NONAME
+    if err == 'getaddrinfo: nodename nor servname provided, or not known' or
+-- EAI_SERVICE
+       err == 'getaddrinfo: Servname not supported for ai_socktype' or
+-- EAI_NONAME
+       err == 'getaddrinfo: Name or service not known' or
+-- EAI_NONAME
+       err == 'getaddrinfo: hostname nor servname provided, or not known' or
+-- EAI_AGAIN
+       err == 'getaddrinfo: Temporary failure in name resolution' or
+-- EAI_AGAIN
+       err == 'getaddrinfo: Name could not be resolved at this time' then
+            return true
+    end
+    return false
+end;
+test_run:cmd("setopt delimiter ''");
+
+s = remote.connect('non_exists_hostname:3301')
+check_err(s['error'])
+
 box.cfg{log_level=log_level}
