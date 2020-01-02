@@ -36,6 +36,7 @@
 #include "sqlInt.h"
 #include "box/box.h"
 #include "box/schema.h"
+#include "tarantoolInt.h"
 
 void
 sql_alter_table_rename(struct Parse *parse)

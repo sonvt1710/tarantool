@@ -265,6 +265,8 @@ struct errcode_record {
 	/*210 */_(ER_SQL_PREPARE,		"Failed to prepare SQL statement: %s") \
 	/*211 */_(ER_WRONG_QUERY_ID,		"Prepared statement with id %u does not exist") \
 	/*212 */_(ER_SEQUENCE_NOT_STARTED,		"Sequence '%s' is not started") \
+	/*213 */_(ER_SQL_CANT_ADD_COLUMN_TO_VIEW,	"Can't add column '%s'. '%s' is a view") \
+	/*214 */_(ER_SQL_CANT_ADD_AUTOINC,	"Can't add AUTOINCREMENT: the space '%s' already has one auto-incremented field") \
 
 /*
  * !IMPORTANT! Please follow instructions at start of the file

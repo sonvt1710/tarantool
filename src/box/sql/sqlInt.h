@@ -2245,12 +2245,26 @@ struct Parse {
 		struct enable_entity_def enable_entity_def;
 	};
 	/**
-	 * Table def is not part of union since information
-	 * being held must survive till the end of parsing of
-	 * whole CREATE TABLE statement (to pass it to
-	 * sqlEndTable() function).
+	 * Table def or column def is not part of union since
+	 * information being held must survive till the end of
+	 * parsing of whole <CREATE TABLE> or
+	 * <ALTER TABLE ADD COLUMN> statement (to pass it to
+	 * sqlEndTable() sql_create_column_end() function).
 	 */
 	struct create_table_def create_table_def;
+	struct create_column_def create_column_def;
+	/**
+	 * FK and CK constraints appeared in a <CREATE TABLE> or
+	 * a <ALTER TABLE ADD COLUMN> statement.
+	 */
+	struct rlist fkeys;
+	struct rlist checks;
+	uint32_t fkey_count;
+	uint32_t check_count;
+	/** True, if column to be created has <AUTOINCREMENT>. */
+	bool has_autoinc;
+	/** Id of field with <AUTOINCREMENT>. */
+	uint32_t autoinc_fieldno;
 	bool initiateTTrans;	/* Initiate Tarantool transaction */
 	/** If set - do not emit byte code at all, just parse.  */
 	bool parse_only;
@@ -2840,15 +2854,31 @@ struct space *sqlResultSetOfSelect(Parse *, Select *);
 
 struct space *
 sqlStartTable(Parse *, Token *);
-void sqlAddColumn(Parse *, Token *, struct type_def *);
+
+/**
+ * Add new field to the format of ephemeral space in
+ * create_table_def. If it is <ALTER TABLE> create shallow copy of
+ * the existing space and add field to its format.
+ */
+void
+sql_create_column_start(struct Parse *parse);
+
+/**
+ * Nullify create_column_def. If it is <ALTER TABLE> emit code to
+ * update entry in _space and code to create constraints (entries
+ * in _index, _ck_constraint, _fk_constraint) described with this
+ * column.
+ */
+void
+sql_create_column_end(struct Parse *parse);
 
 /**
  * This routine is called by the parser while in the middle of
- * parsing a CREATE TABLE statement.  A "NOT NULL" constraint has
- * been seen on a column.  This routine sets the is_nullable flag
- * on the column currently under construction.
- * If nullable_action has been already set, this function raises
- * an error.
+ * parsing a <CREATE TABLE> or a <ALTER TABLE ADD COLUMN>
+ * statement. A "NOT NULL" constraint has been seen on a column.
+ * This routine sets the is_nullable flag on the column currently
+ * under construction. If nullable_action has been already set,
+ * this function raises an error.
  *
  * @param parser SQL Parser object.
  * @param nullable_action on_conflict_action value.
