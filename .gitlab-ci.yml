@@ -139,19 +139,20 @@ release_asan_clang8:
   script:
     - ${GITLAB_MAKE} test_asan_debian_no_deps
 
-osx_13_release:
-  <<: *release_only_definition
+osx_15_release:
   <<: *vbox_definition
   tags:
-    - vms_osx_13
+    - vms_osx_15
   variables:
-    VMS_NAME: 'osx_13'
+    EXTRA_ENV: '. /etc/profile ;'
+    VMS_NAME: 'osx_15'
     VMS_USER: 'tarantool'
-    VMS_PORT: '2212'
+    VMS_PORT: '2242'
   script:
     - ${GITLAB_MAKE} vms_test_osx
 
 osx_14_release:
+  <<: *release_only_definition
   <<: *docker_test_definition
   tags:
     - osx_14
