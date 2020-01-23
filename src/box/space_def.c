@@ -233,7 +233,7 @@ space_def_new(uint32_t id, uint32_t uid, uint32_t exact_field_count,
 }
 
 struct space_def*
-space_def_new_ephemeral(uint32_t field_count)
+space_def_new_ephemeral(uint32_t field_count, struct field_def *fields)
 {
 	struct space_opts opts = space_opts_default;
 	opts.is_temporary = true;
@@ -242,8 +242,7 @@ space_def_new_ephemeral(uint32_t field_count)
 						    "ephemeral",
 						    strlen("ephemeral"),
 						    "memtx", strlen("memtx"),
-						    &opts, &field_def_default,
-						    0);
+						    &opts, fields, field_count);
 	return space_def;
 }
 
