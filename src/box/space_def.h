@@ -177,7 +177,7 @@ space_def_new(uint32_t id, uint32_t uid, uint32_t exact_field_count,
  * @retval Space definition.
  */
 struct space_def *
-space_def_new_ephemeral(uint32_t field_count);
+space_def_new_ephemeral(uint32_t field_count, struct field_def *fields);
 
 /**
  * Size of the space_def.
