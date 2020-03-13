@@ -27,6 +27,7 @@ local errno = require('errno')
 local urilib = require('uri')
 local yaml = require('yaml')
 local net_box = require('net.box')
+local box_internal = require('box.internal')
 
 local PUSH_TAG_HANDLE = '!push!'
 
@@ -205,6 +206,13 @@ local function current_output()
     elseif fmt == ffi.C.OUTPUT_FORMAT_LUA_BLOCK then
         return { ["fmt"] = "lua", ["opts"] = "block" }
     end
+end
+
+-- Used by console_session_push.
+box_internal.format_lua_push = function(value)
+    local opts = current_output()["opts"]
+    value = format_lua_value(value, opts)
+    return '-- Push\n' .. value .. ';'
 end
 
 --
@@ -426,8 +434,8 @@ local text_connection_mt = {
             return self._socket:write(text)
         end,
         --
-        -- Read a text from a socket until YAML terminator.
-        -- @retval not nil Well formatted YAML.
+        -- Read a text from a socket until EOS.
+        -- @retval not nil Well formatted data.
         -- @retval     nil Error.
         --
         read = function(self)
@@ -459,6 +467,7 @@ local text_connection_mt = {
                     param_handlers[items[2]] == set_output then
                     local err, fmt, opts = parse_output(items[3])
                     if not err then
+                        self.fmt = fmt
                         self.eos = output_eos[fmt]
                     end
                 end
@@ -470,6 +479,7 @@ local text_connection_mt = {
         eval = function(self, text)
             self:preprocess_eval(text)
             text = text..'$EOF$\n'
+            local fmt = self.fmt or default_output_format["fmt"]
             if not self:write(text) then
                 error(self:set_error())
             end
@@ -478,14 +488,23 @@ local text_connection_mt = {
                 if not rc then
                     break
                 end
-                local handle, prefix = yaml.decode(rc, {tag_only = true})
-                if not handle then
-                    -- Can not fail - tags are encoded with no
-                    -- user participation and are correct always.
-                    return rc
-                end
-                if handle == PUSH_TAG_HANDLE and self.print_f then
-                    self.print_f(rc)
+                if fmt == "yaml" then
+                    local handle, prefix = yaml.decode(rc, {tag_only = true})
+                    if not handle then
+                        -- Can not fail - tags are encoded with no
+                        -- user participation and are correct always.
+                        return rc
+                    end
+                    if handle == PUSH_TAG_HANDLE and self.print_f then
+                        self.print_f(rc)
+                    end
+                else
+                    if not string.startswith(rc, '-- Push') then
+                        return rc
+                    end
+                    if self.print_f then
+                        self.print_f(rc)
+                    end
                 end
             end
             return error(self:set_error())
@@ -524,6 +543,7 @@ local function wrap_text_socket(connection, url, print_f)
         port = url.service,
         print_f = print_f,
         eos = current_eos(),
+        fmt = current_output()["fmt"]
     }, text_connection_mt)
     --
     -- Prepare the connection: setup EOS symbol
