@@ -377,6 +377,18 @@ console_session_fd(struct session *session)
 	return session->meta.fd;
 }
 
+enum output_format
+console_get_output_format()
+{
+	return current_session()->meta.output_format;
+}
+
+void
+console_set_output_format(enum output_format output_format)
+{
+	current_session()->meta.output_format = output_format;
+}
+
 /**
  * Dump port lua data as a YAML document tagged with !push! global
  * tag.
