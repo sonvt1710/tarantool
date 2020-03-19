@@ -1,0 +1,23 @@
+ARG IMG
+FROM ${IMG}
+
+ARG PKG_TOOL
+RUN ${PKG_TOOL} update -y >1.log 2>&1 || ( cat 1.log && false )
+RUN ${PKG_TOOL} install -y curl >2.log 2>&1 || ( cat 2.log && false )
+
+RUN curl -L https://tarantool.io/installer.sh >installer.sh 2>3.log || ( cat 3.log && false )
+RUN chmod a+x installer.sh
+RUN sed "s#/bin/bash#/bin/bash -x#g" -i installer.sh
+
+# ./installer.sh is the external tool which return status is not
+# expectable and can be false because of its additional features,
+# all that is needed for us from the script just to install Tarantool,
+# NOTE: found that on centos:8 script fails but on rerun passes
+ARG REL
+RUN VER=${REL} ./installer.sh >4.log 2>&1 || ( VER=${REL} ./installer.sh >>4.log 2>&1 || ( cat 4.log && false ))
+ARG TNT_VER
+RUN CVER=$(tarantool -V | head -n 1 | awk '{print $2}' | sed 's#-#.#g') && \
+    echo "Tarantool version:" && \
+    echo "Expected: ${TNT_VER}" && \
+    echo "Returned: ${CVER}" && \
+    if ! echo "${CVER}" | grep -e "^${TNT_VER}" >/dev/null ; then false ; fi
