@@ -56,7 +56,7 @@ mp_decode_decimal(const char **data, decimal_t *dec);
 
 /**
  * \brief Encode a decimal pointed to by \a dec.
- * \parad dec - decimal pointer
+ * \param dec - decimal pointer
  * \param data - a buffer
  * \return \a data + mp_sizeof_decimal(\a dec)
  */
