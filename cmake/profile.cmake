@@ -42,6 +42,11 @@ else()
     add_definitions(-DNVALGRIND=1)
 endif()
 
+option(ENABLE_FUZZER "Enable fuzzing testing" OFF)
+if (ENABLE_FUZZER)
+    set(TESTING_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/Testing")
+endif ()
+
 option(ENABLE_ASAN "Enable AddressSanitizer, a fast memory error detector based on compiler instrumentation" OFF)
 if (ENABLE_ASAN)
     if (CMAKE_COMPILER_IS_GNUCC)
