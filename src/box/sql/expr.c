@@ -2847,6 +2847,7 @@ sqlCodeSubselect(Parse * pParse,	/* Parsing context */
 					}
 				}
 			} else if (ALWAYS(pExpr->x.pList != 0)) {
+				assert(nVal == 1);
 				/* Case 2:     expr IN (exprlist)
 				 *
 				 * For each expression, build an index key from the evaluation and
@@ -2861,6 +2862,8 @@ sqlCodeSubselect(Parse * pParse,	/* Parsing context */
 
 				enum field_type lhs_type =
 					sql_expr_type(pLeft);
+				key_info->parts[0].type = sql_type_is_numeric(lhs_type) ?
+							  FIELD_TYPE_NUMBER : lhs_type;
 				bool unused;
 				struct coll *unused_coll;
 				if (sql_expr_coll(pParse, pExpr->pLeft, &unused,
@@ -2886,8 +2889,14 @@ sqlCodeSubselect(Parse * pParse,	/* Parsing context */
 						jmpIfDynamic = -1;
 					}
 					r3 = sqlExprCodeTarget(pParse, pE2, r1);
-					enum field_type types[2] =
-						{ lhs_type, field_type_MAX };
+					size_t sz = 2 * sizeof(enum field_type);
+					enum field_type *types =
+						sqlDbMallocRaw(sql_get(), sz);
+					types[0] = lhs_type;
+					types[1] = field_type_MAX;
+					sqlVdbeAddOp4(v, OP_ApplyType, r3, 1, 0,
+						      (char *)types,
+						      P4_DYNAMIC);
 	 				sqlVdbeAddOp4(v, OP_MakeRecord, r3,
 							  1, r2, (char *)types,
 							  sizeof(types));
