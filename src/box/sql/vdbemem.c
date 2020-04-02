@@ -668,6 +668,7 @@ sqlVdbeMemCast(Mem * pMem, enum field_type type)
 	assert(type < field_type_MAX);
 	if (pMem->flags & MEM_Null)
 		return 0;
+	pMem->field_type = type;
 	switch (type) {
 	case FIELD_TYPE_SCALAR:
 		return 0;
