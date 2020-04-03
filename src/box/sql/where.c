@@ -276,7 +276,7 @@ whereScanNext(WhereScan * pScan)
 						sqlExprSkipCollate(pTerm->
 								       pExpr->
 								       pRight))->
-					    op == TK_COLUMN) {
+					    op == TK_COLUMN_NAME) {
 						int j;
 						for (j = 0; j < pScan->nEquiv; j++) {
 							if (pScan->aiCur[j] == pX->iTable
@@ -319,7 +319,7 @@ whereScanNext(WhereScan * pScan)
 							}
 						}
 						if ((pTerm->eOperator & WO_EQ) != 0
-						    && (pX = pTerm->pExpr->pRight)->op == TK_COLUMN
+						    && (pX = pTerm->pExpr->pRight)->op == TK_COLUMN_NAME
 						    && pX->iTable == pScan->aiCur[0]
 						    && pX->iColumn == pScan->aiColumn[0]) {
 							continue;
@@ -555,7 +555,7 @@ findIndexCol(Parse * pParse,	/* Parse context */
 	struct key_part *part_to_match = &idx_def->key_def->parts[iCol];
 	for (int i = 0; i < pList->nExpr; i++) {
 		Expr *p = sqlExprSkipCollate(pList->a[i].pExpr);
-		if (p->op == TK_COLUMN && p->iTable == iBase &&
+		if (p->op == TK_COLUMN_NAME && p->iTable == iBase &&
 		    p->iColumn == (int) part_to_match->fieldno) {
 			bool is_found;
 			uint32_t id;
@@ -601,7 +601,8 @@ isDistinctRedundant(Parse * pParse,		/* Parsing context */
 	 */
 	for (int i = 0; i < pDistinct->nExpr; i++) {
 		Expr *p = sqlExprSkipCollate(pDistinct->a[i].pExpr);
-		if (p->op == TK_COLUMN && p->iTable == iBase && p->iColumn < 0)
+		if (p->op == TK_COLUMN_NAME && p->iTable == iBase &&
+		    p->iColumn < 0)
 			return 1;
 	}
 	if (space == NULL)
@@ -2245,7 +2246,7 @@ whereRangeVectorLen(Parse * pParse,	/* Parsing context */
 		 * leftmost index column.
 		 */
 		struct key_part *parts = idx_def->key_def->parts;
-		if (pLhs->op != TK_COLUMN || pLhs->iTable != iCur ||
+		if (pLhs->op != TK_COLUMN_NAME || pLhs->iTable != iCur ||
 		    pLhs->iColumn != (int)parts[i + nEq].fieldno ||
 		    parts[i + nEq].sort_order != parts[nEq].sort_order)
 			break;
@@ -2677,7 +2678,7 @@ indexMightHelpWithOrderBy(WhereLoopBuilder * pBuilder,
 		return 0;
 	for (ii = 0; ii < pOB->nExpr; ii++) {
 		Expr *pExpr = sqlExprSkipCollate(pOB->a[ii].pExpr);
-		if (pExpr->op == TK_COLUMN && pExpr->iTable == iCursor) {
+		if (pExpr->op == TK_COLUMN_NAME && pExpr->iTable == iCursor) {
 			if (pExpr->iColumn < 0)
 				return 1;
 			for (jj = 0; jj < part_count; jj++) {
@@ -3213,7 +3214,7 @@ wherePathSatisfiesOrderBy(WhereInfo * pWInfo,	/* The WHERE clause */
 			if (MASKBIT(i) & obSat)
 				continue;
 			pOBExpr = sqlExprSkipCollate(pOrderBy->a[i].pExpr);
-			if (pOBExpr->op != TK_COLUMN)
+			if (pOBExpr->op != TK_COLUMN_NAME)
 				continue;
 			if (pOBExpr->iTable != iCur)
 				continue;
@@ -3361,7 +3362,8 @@ wherePathSatisfiesOrderBy(WhereInfo * pWInfo,	/* The WHERE clause */
 					if ((wctrlFlags & (WHERE_GROUPBY | WHERE_DISTINCTBY)) == 0)
 						bOnce = 0;
 					if (iColumn >= (-1)) {
-						if (pOBExpr->op != TK_COLUMN)
+						if (pOBExpr->op !=
+						    TK_COLUMN_NAME)
 							continue;
 						if (pOBExpr->iTable != iCur)
 							continue;
