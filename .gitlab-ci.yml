@@ -201,54 +201,11 @@ perf_sysbench:
   variables:
     <<: *perf_vars_definition
     BENCH: 'sysbench'
-
-perf_tpcc:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'tpcc'
-
-perf_ycsb_hash:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'ycsb'
-    ARG: 'hash'
-
-perf_ycsb_tree:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'ycsb'
-    ARG: 'tree'
-
-perf_nosqlbench_hash:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'nosqlbench'
-    ARG: 'hash'
-
-perf_nosqlbench_tree:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'nosqlbench'
-    ARG: 'tree'
-
-perf_cbench:
-  <<: *perf_docker_test_definition
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'cbench'
-
-perf_linkbench_ssd:
-  <<: *perf_docker_test_definition
-  tags:
-    - docker_perf_ssd
-  variables:
-    <<: *perf_vars_definition
-    BENCH: 'linkbench'
+  artifacts:
+    when: always
+    paths:
+      - Sysbench_result.txt
+      - sysbench_t_version.txt
 
 # Post-testing part
 

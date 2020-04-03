@@ -81,7 +81,7 @@ docker_bootstrap:
 # Clone the benchmarks repository for performance testing
 perf_clone_benchs_repo:
 	git clone https://github.com/tarantool/bench-run.git
-
+	cd bench-run && git checkout opiskunov/add-bench-report
 # Build images for performance testing
 perf_prepare: perf_clone_benchs_repo
 	make -f bench-run/targets.mk prepare
