@@ -103,18 +103,18 @@ release:
   script:
     - ${GITLAB_MAKE} test_debian_no_deps
 
-debug:
-  <<: *docker_test_definition
-  script:
-    - ${GITLAB_MAKE} test_coverage_debian_no_deps
+#debug:
+#  <<: *docker_test_definition
+#  script:
+#    - ${GITLAB_MAKE} test_coverage_debian_no_deps
 
-release_clang:
-  <<: *docker_test_definition
-  variables:
-    CC: clang
-    CXX: clang++
-  script:
-    - ${GITLAB_MAKE} test_debian_no_deps
+#release_clang:
+#  <<: *docker_test_definition
+#  variables:
+#    CC: clang
+#    CXX: clang++
+#  script:
+#    - ${GITLAB_MAKE} test_debian_no_deps
 
 release_lto:
   <<: *release_only_definition
@@ -134,10 +134,10 @@ release_lto_clang8:
   script:
     - ${GITLAB_MAKE} test_debian_no_deps
 
-release_asan_clang8:
-  <<: *docker_test_clang8_definition
-  script:
-    - ${GITLAB_MAKE} test_asan_debian_no_deps
+#release_asan_clang8:
+#  <<: *docker_test_clang8_definition
+#  script:
+#    - ${GITLAB_MAKE} test_asan_debian_no_deps
 
 osx_13_release:
   <<: *release_only_definition
@@ -151,12 +151,12 @@ osx_13_release:
   script:
     - ${GITLAB_MAKE} vms_test_osx
 
-osx_14_release:
-  <<: *docker_test_definition
-  tags:
-    - osx_14
-  script:
-    - ${GITLAB_MAKE} test_osx
+#osx_14_release:
+#  <<: *docker_test_definition
+#  tags:
+#    - osx_14
+#  script:
+#    - ${GITLAB_MAKE} test_osx
 
 osx_14_release_lto:
   <<: *release_only_definition
@@ -168,17 +168,17 @@ osx_14_release_lto:
   script:
     - ${GITLAB_MAKE} test_osx
 
-freebsd_12_release:
-  <<: *vbox_definition
-  tags:
-    - vms_freebsd_12
-  variables:
-    VMS_NAME: 'freebsd_12'
-    VMS_USER: 'vagrant'
-    VMS_PORT: '2232'
-    MAKE: 'gmake'
-  script:
-    - ${GITLAB_MAKE} vms_test_freebsd
+#freebsd_12_release:
+#  <<: *vbox_definition
+#  tags:
+#    - vms_freebsd_12
+#  variables:
+#    VMS_NAME: 'freebsd_12'
+#    VMS_USER: 'vagrant'
+#    VMS_PORT: '2232'
+#    MAKE: 'gmake'
+#  script:
+#    - ${GITLAB_MAKE} vms_test_freebsd
 
 # ####
 # Perf
@@ -404,10 +404,10 @@ debian_10_deploy:
 
 # Static builds
 
-static_build:
-  <<: *docker_test_definition
-  script:
-    - ${GITLAB_MAKE} test_static_build
+#static_build:
+#  <<: *docker_test_definition
+#  script:
+#    - ${GITLAB_MAKE} test_static_build
 
 static_docker_build:
   <<: *release_only_definition
