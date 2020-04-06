@@ -6,7 +6,7 @@ stages:
 variables:
   GITLAB_MAKE: "make -f .gitlab.mk"
 
-# Jobs templates  
+# Jobs templates 
 
 .release_only_template: &release_only_definition
   only:
