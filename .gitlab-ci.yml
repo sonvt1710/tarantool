@@ -96,7 +96,7 @@ variables:
   script:
     - ${GITLAB_MAKE} perf_run
 
-# Tests 
+# Tests  
 
 release:
   <<: *docker_test_definition
