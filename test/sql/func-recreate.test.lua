@@ -8,7 +8,7 @@ box.internal.sql_create_function('WAITFOR', 'INT', function (n) fiber.sleep(n) r
 
 ch = fiber.channel(1)
 
-_ = fiber.create(function () ch:put(box.execute('select WAITFOR(0.2)')) end)
+_ = fiber.create(function () ch:put(box.execute('select WAITFOR(0.5)')) end)
 fiber.sleep(0.1)
 
 box.internal.sql_create_function('WAITFOR', 'INT', function (n) require('fiber').sleep(n) return n end)
