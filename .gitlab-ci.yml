@@ -204,8 +204,8 @@ perf_sysbench:
   artifacts:
     when: always
     paths:
-      - *_result.txt
-      - *_t_version.txt
+      - Sysbench_result.txt
+      - sysbench_t_version.txt
 
 # Post-testing part
 
