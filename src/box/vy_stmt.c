@@ -134,6 +134,13 @@ vy_stmt_alloc(struct tuple_format *format, uint32_t bsize)
 {
 	uint32_t total_size = sizeof(struct vy_stmt) + format->field_map_size +
 		bsize;
+#ifndef NDEBUG
+	struct errinj *inj = errinj(ERRINJ_VY_MAX_TUPLE_SIZE, ERRINJ_INT);
+	if (inj != NULL && inj->iparam >= 0) {
+		if (inj->iparam-- == 0)
+			total_size = vy_max_tuple_size + 1;
+	}
+#endif
 	if (unlikely(total_size > vy_max_tuple_size)) {
 		diag_set(ClientError, ER_VINYL_MAX_TUPLE_SIZE,
 			 (unsigned) total_size);
