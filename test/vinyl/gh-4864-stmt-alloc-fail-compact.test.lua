@@ -51,3 +51,28 @@ assert(errinj.get('ERRINJ_VY_MAX_TUPLE_SIZE') == -1)
 errinj.set('ERRINJ_VY_MAX_TUPLE_SIZE', -1)
 
 s:drop()
+
+-- All the same except for delayed vy_stmt_alloc() fail.
+-- Re-create space for the sake of test purity.
+--
+s = box.schema.space.create('test', {engine = 'vinyl'})
+_ = s:create_index('pk', {run_count_per_level = 100, page_size = 128, range_size = 1024})
+
+dump(true)
+dump()
+
+compact()
+
+dump()
+
+errinj = box.error.injection
+errinj.set('ERRINJ_VY_MAX_TUPLE_SIZE', 0)
+-- Should finish successfully despite vy_stmt_alloc() fail.
+--
+compact()
+assert(s.index.pk:stat().range_count == 1)
+assert(s.index.pk:stat().run_count == 1)
+assert(errinj.get('ERRINJ_VY_MAX_TUPLE_SIZE') == -1)
+errinj.set('ERRINJ_VY_MAX_TUPLE_SIZE', -1)
+
+s:drop()

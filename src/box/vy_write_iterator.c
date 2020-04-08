@@ -790,8 +790,11 @@ next_lsn:
 	 * statement around if this is major compaction, because
 	 * there's no tuple it could overwrite.
 	 */
-	if (rc == 0 && stream->is_last_level &&
-	    stream->deferred_delete_stmt != NULL) {
+	if (rc != 0) {
+		for (int i = 0; i < stream->rv_count; ++i)
+			stream->read_views[i].history = NULL;
+	} else if (stream->is_last_level &&
+		   stream->deferred_delete_stmt != NULL) {
 		vy_stmt_unref_if_possible(stream->deferred_delete_stmt);
 		stream->deferred_delete_stmt = NULL;
 	}
@@ -983,8 +986,13 @@ vy_write_iterator_build_read_views(struct vy_write_iterator *stream, int *count)
 		if (rv->history == NULL)
 			continue;
 		if (vy_read_view_merge(stream, hint, rv,
-				       is_first_insert) != 0)
+				       is_first_insert) != 0) {
+			while (rv >= &stream->read_views[0]) {
+				rv->history = NULL;
+				rv--;
+			}
 			goto error;
+		}
 		assert(rv->history == NULL);
 		if (rv->tuple == NULL)
 			continue;
