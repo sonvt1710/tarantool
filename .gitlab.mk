@@ -137,4 +137,5 @@ deploy: package
 # ###################
 
 perf_run:
+	cd /opt/bench-run && git checkout opiskunov/add-bench-report
 	/opt/bench-run/benchs/${BENCH}/run.sh ${ARG}

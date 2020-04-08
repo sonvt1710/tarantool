@@ -1,7 +1,7 @@
 stages:
   - test
   - perf
-  - cleanup
+#  - cleanup
 
 variables:
   GITLAB_MAKE: "make -f .gitlab.mk"
@@ -92,7 +92,7 @@ variables:
   image: ${IMAGE_PERF_BUILT}
   stage: perf
   tags:
-    - docker_perf
+    - deploy_test
   script:
     - ${GITLAB_MAKE} perf_run
 
@@ -190,7 +190,7 @@ perf_bootstrap:
   <<: *perf_only_definition
   stage: test
   tags:
-    - perf
+    - deploy_test
   script:
     - ${GITLAB_MAKE} perf_prepare
 
@@ -204,19 +204,19 @@ perf_sysbench:
   artifacts:
     when: always
     paths:
-      - Sysbench_result.txt
-      - sysbench_t_version.txt
+      - *_result.txt
+      - *_t_version.txt
 
 # Post-testing part
 
-remove_images:
-  <<: *perf_only_definition
-  stage: cleanup
-  when: always
-  tags:
-    - perf
-  script:
-    - ${GITLAB_MAKE} perf_cleanup
+#remove_images:
+#  <<: *perf_only_definition
+#  stage: cleanup
+#  when: always
+#  tags:
+#    - perf
+#  script:
+#    - ${GITLAB_MAKE} perf_cleanup
 
 # Packs
 
