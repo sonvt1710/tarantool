@@ -194,7 +194,7 @@ perf_bootstrap:
   script:
     - ${GITLAB_MAKE} perf_prepare
 
-# Testing part
+# Testing part 
 
 perf_sysbench:
   <<: *perf_docker_test_definition
