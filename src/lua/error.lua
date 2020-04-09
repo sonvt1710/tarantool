@@ -26,6 +26,8 @@ struct error {
     char _errmsg[DIAG_ERRMSG_MAX];
     struct error *_cause;
     struct error *_effect;
+    char *lua_traceback;
+    bool traceback_mode;
 };
 
 char *
@@ -92,6 +94,14 @@ local function error_trace(err)
     }
 end
 
+local function error_traceback(err)
+    local result = "Traceback is absent"
+    if err.lua_traceback ~= ffi.nullptr then
+        result = ffi.string(err.lua_traceback)
+    end
+    return result
+end
+
 local function error_errno(err)
     local e = err._saved_errno
     if e == 0 then
@@ -122,7 +132,6 @@ local function error_set_prev(err, prev)
     if ok ~= 0 then
         error("Cycles are not allowed")
     end
-
 end
 
 local error_fields = {
@@ -131,6 +140,7 @@ local error_fields = {
     ["trace"]       = error_trace;
     ["errno"]       = error_errno;
     ["prev"]        = error_prev;
+    ["traceback"]   = error_traceback;
 }
 
 local function error_unpack(err)

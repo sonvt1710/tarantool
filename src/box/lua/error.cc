@@ -54,6 +54,8 @@ luaT_error_create(lua_State *L, int top_base)
 {
 	uint32_t code = 0;
 	const char *reason = NULL;
+	bool tb_parsed = false;
+	bool tb_mode = false;
 	const char *file = "";
 	unsigned line = 0;
 	lua_Debug info;
@@ -87,6 +89,12 @@ luaT_error_create(lua_State *L, int top_base)
 		if (reason == NULL)
 			reason = "";
 		lua_pop(L, 1);
+		lua_getfield(L, top_base, "traceback");
+		if (lua_isboolean(L, -1)) {
+			tb_parsed = true;
+			tb_mode = lua_toboolean(L, -1);
+		}
+		lua_pop(L, -1);
 	} else {
 		return NULL;
 	}
@@ -102,7 +110,12 @@ raise:
 		}
 		line = info.currentline;
 	}
-	return box_error_new(file, line, code, "%s", reason);
+
+	struct error *err = box_error_new(file, line, code, "%s", reason);
+	if (tb_parsed)
+		err->traceback_mode = tb_mode;
+
+	return err;
 }
 
 static int
@@ -176,6 +189,20 @@ luaT_error_set(struct lua_State *L)
 		return luaL_error(L, "Usage: box.error.set(error)");
 	struct error *e = luaL_checkerror(L, 1);
 	diag_set_error(&fiber()->diag, e);
+	return 0;
+}
+
+static int
+luaT_error_cfg(struct lua_State *L)
+{
+	if (lua_gettop(L) < 1 || !lua_istable(L, 1))
+		return luaL_error(L, "Usage: box.error.cfg({}})");
+
+	lua_getfield(L, 1, "traceback_supplementation");
+	if (lua_isnil(L, -1) == 0)
+		error_set_traceback_supplementation(lua_toboolean(L, -1));
+	lua_pop(L, 1);
+
 	return 0;
 }
 
@@ -296,6 +323,10 @@ box_lua_error_init(struct lua_State *L) {
 		{
 			lua_pushcfunction(L, luaT_error_set);
 			lua_setfield(L, -2, "set");
+		}
+		{
+			lua_pushcfunction(L, luaT_error_cfg);
+			lua_setfield(L, -2, "cfg");
 		}
 		lua_setfield(L, -2, "__index");
 	}

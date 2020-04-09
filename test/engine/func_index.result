@@ -276,7 +276,8 @@ e = box.error.last()
  | ...
 e:unpack()
  | ---
- | - code: 198
+ | - traceback: Traceback is absent
+ |   code: 198
  |   trace:
  |   - file: <filename>
  |     line: <line>
@@ -291,12 +292,13 @@ e = e.prev
  | ...
 e:unpack()
  | ---
- | - type: LuajitError
- |   message: '[string "return function(tuple)                 local ..."]:1: attempt
- |     to call global ''require'' (a nil value)'
+ | - traceback: Traceback is absent
  |   trace:
  |   - file: <filename>
  |     line: <line>
+ |   type: LuajitError
+ |   message: '[string "return function(tuple)                 local ..."]:1: attempt
+ |     to call global ''require'' (a nil value)'
  | ...
 e = e.prev
  | ---

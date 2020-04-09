@@ -31,6 +31,11 @@
 #include "diag.h"
 #include "fiber.h"
 
+/**
+ * Global flag to add or not backtrace to errors.
+ */
+static bool global_traceback_mode = false;
+
 int
 error_set_prev(struct error *e, struct error *prev)
 {
@@ -97,6 +102,8 @@ error_create(struct error *e,
 	e->errmsg[0] = '\0';
 	e->cause = NULL;
 	e->effect = NULL;
+	e->lua_traceback = NULL;
+	e->traceback_mode = global_traceback_mode;
 }
 
 struct diag *
@@ -120,3 +127,28 @@ error_vformat_msg(struct error *e, const char *format, va_list ap)
 	vsnprintf(e->errmsg, sizeof(e->errmsg), format, ap);
 }
 
+void
+error_set_lua_traceback(struct error *e, const char *lua_traceback)
+{
+	if (e == NULL)
+		return;
+
+	if (lua_traceback == NULL) {
+		free(e->lua_traceback);
+		e->lua_traceback = NULL;
+		return;
+	}
+
+	size_t tb_len = strlen(lua_traceback);
+	e->lua_traceback = realloc(e->lua_traceback, tb_len + 1);
+	if (e->lua_traceback == NULL)
+		return;
+	strcpy(e->lua_traceback, lua_traceback);
+	return;
+}
+
+void
+error_set_traceback_supplementation(bool traceback_mode)
+{
+	global_traceback_mode = traceback_mode;
+}

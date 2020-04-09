@@ -1038,12 +1038,13 @@ st;
 ...
 e:unpack();
 ---
-- type: ClientError
+- traceback: Traceback is absent
   code: 1
-  message: Illegal parameters, oh my
   trace:
   - file: '[string "function err() box.error(box.error.ILLEGAL_PA..."]'
     line: 1
+  type: ClientError
+  message: Illegal parameters, oh my
 ...
 flag = false;
 ---

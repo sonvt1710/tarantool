@@ -110,6 +110,8 @@ struct error {
 	 */
 	struct error *cause;
 	struct error *effect;
+	char *lua_traceback;
+	bool traceback_mode;
 };
 
 static inline void
@@ -196,6 +198,15 @@ error_format_msg(struct error *e, const char *format, ...);
 
 void
 error_vformat_msg(struct error *e, const char *format, va_list ap);
+
+void
+error_set_lua_traceback(struct error *e, const char *lua_traceback);
+
+/**
+* Sets the global flag to add or not backtrace to errors.
+*/
+void
+error_set_traceback_supplementation(bool traceback_mode);
 
 /**
  * Diagnostics Area - a container for errors

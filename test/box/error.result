@@ -34,12 +34,13 @@ e
  | ...
 e:unpack()
  | ---
- | - type: ClientError
+ | - traceback: Traceback is absent
  |   code: 1
- |   message: Illegal parameters, bla bla
  |   trace:
  |   - file: '[C]'
  |     line: 4294967295
+ |   type: ClientError
+ |   message: Illegal parameters, bla bla
  | ...
 e.type
  | ---

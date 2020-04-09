@@ -85,6 +85,16 @@ luaT_pusherror(struct lua_State *L, struct error *e)
 	 * then set the finalizer.
 	 */
 	error_ref(e);
+
+	if (e->lua_traceback == NULL && e->traceback_mode) {
+		int top = lua_gettop(L);
+		luaL_traceback(L, L, NULL, 0);
+		if (lua_isstring(L, -1)) {
+			error_set_lua_traceback(e, lua_tostring(L, -1));
+		}
+		lua_settop(L, top);
+	}
+
 	assert(CTID_CONST_STRUCT_ERROR_REF != 0);
 	struct error **ptr = (struct error **)
 		luaL_pushcdata(L, CTID_CONST_STRUCT_ERROR_REF);
