@@ -144,6 +144,9 @@ session_create(enum session_type type)
 	session->sql_default_engine = SQL_STORAGE_ENGINE_MEMTX;
 	session->sql_stmts = NULL;
 
+	/* Set default Lua serializer context */
+	session->serializer_ctx.err_format_ver = ERR_FORMAT_DEF;
+
 	/* For on_connect triggers. */
 	credentials_create(&session->credentials, guest_user);
 	struct mh_i64ptr_node_t node;

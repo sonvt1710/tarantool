@@ -55,6 +55,7 @@
 #include "call.h"
 #include "tuple_convert.h"
 #include "session.h"
+#include "session_settings.h"
 #include "xrow.h"
 #include "schema.h" /* schema_version */
 #include "replication.h" /* instance_uuid */
@@ -2183,6 +2184,100 @@ iproto_session_push(struct session *session, uint64_t sync, struct port *port)
 
 /** }}} */
 
+enum {
+	IPROTO_SESSION_SETTING_ERR_FORMAT = 0,
+	iproto_session_setting_MAX,
+};
+
+static const char *iproto_session_setting_strs[iproto_session_setting_MAX] = {
+	"iproto_error_format",
+};
+
+static int iproto_session_field_type[] = {
+	/** IPROTO_SESSION_SETTING_ERR_FORMAT */
+	FIELD_TYPE_UNSIGNED,
+};
+
+static void
+iproto_session_setting_get(int id, const char **mp_pair,
+			   const char **mp_pair_end)
+{
+	if (id < 0 || id >= iproto_session_setting_MAX) {
+		diag_set(ClientError, ER_ILLEGAL_PARAMS,
+			 "unknown session setting");
+		return;
+	}
+	struct session *session = current_session();
+
+	const char *name = iproto_session_setting_strs[id];
+	size_t name_len = strlen(name);
+
+	/* Now we have only one iproto session setting. */
+	size_t size = mp_sizeof_array(2) + mp_sizeof_str(name_len)
+		+ mp_sizeof_uint(session->serializer_ctx.err_format_ver);
+
+	char *pos = (char*)static_alloc(size);
+	assert(pos != NULL);
+	char *pos_end = mp_encode_array(pos, 2);
+	pos_end = mp_encode_str(pos_end, name, name_len);
+	pos_end = mp_encode_uint(pos_end,
+				 session->serializer_ctx.err_format_ver);
+	*mp_pair = pos;
+	*mp_pair_end = pos_end;
+}
+
+static int
+iproto_session_setting_set(int id, const char *mp_value)
+{
+	if (id < 0 || id >= iproto_session_setting_MAX) {
+		diag_set(ClientError, ER_ILLEGAL_PARAMS,
+			 "unknown session setting");
+		return -1;
+	}
+	/*Current IPROTO session settings are used only for BINARY session */
+	if (current_session()->type != SESSION_TYPE_BINARY)
+		return -1;
+
+	enum mp_type mtype = mp_typeof(*mp_value);
+	int stype = iproto_session_field_type[id];
+	switch(stype) {
+	case FIELD_TYPE_UNSIGNED: {
+		if (mtype != MP_UINT)
+			break;
+		int val = mp_decode_uint(&mp_value);
+		switch (id) {
+		case IPROTO_SESSION_SETTING_ERR_FORMAT:
+			if (val >= ERR_FORMAT_UNK)
+				break;
+			current_session()->serializer_ctx.err_format_ver = val;
+			return 0;
+		default:
+			diag_set(ClientError, ER_SESSION_SETTING_INVALID_VALUE,
+				 iproto_session_setting_strs[id],
+				 field_type_strs[stype]);
+			return -1;
+		}
+		break;
+	}
+	default:
+		unreachable();
+	}
+	diag_set(ClientError, ER_SESSION_SETTING_INVALID_VALUE,
+		 iproto_session_setting_strs[id], field_type_strs[stype]);
+	return -1;
+}
+
+void
+iproto_session_settings_init()
+{
+	struct session_setting_module *module =
+		&session_setting_modules[SESSION_SETTING_IPROTO];
+	module->settings = iproto_session_setting_strs;
+	module->setting_count = iproto_session_setting_MAX;
+	module->get = iproto_session_setting_get;
+	module->set = iproto_session_setting_set;
+}
+
 /** Initialize the iproto subsystem and start network io thread */
 void
 iproto_init()
@@ -2201,6 +2296,8 @@ iproto_init()
 		/* .sync = */ iproto_session_sync,
 	};
 	session_vtab_registry[SESSION_TYPE_BINARY] = iproto_session_vtab;
+
+	iproto_session_settings_init();
 }
 
 /** Available iproto configuration changes. */

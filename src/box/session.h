@@ -36,6 +36,7 @@
 #include "fiber.h"
 #include "user.h"
 #include "authentication.h"
+#include "lua/utils.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -110,6 +111,8 @@ struct session {
 	struct credentials credentials;
 	/** Trigger for fiber on_stop to cleanup created on-demand session */
 	struct trigger fiber_on_stop;
+	/** Session Lua serializer context */
+	struct luaL_serializer_ctx serializer_ctx;
 };
 
 struct session_vtab {

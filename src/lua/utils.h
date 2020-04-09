@@ -266,6 +266,26 @@ struct luaL_serializer {
 	struct rlist on_update;
 };
 
+/**
+ * An error serialization formats
+ */
+enum error_formats {
+	/** Default(old) format */
+	ERR_FORMAT_DEF,
+	/** Extended format */
+	ERR_FORMAT_EX,
+	/** The max version of error format */
+	ERR_FORMAT_UNK
+};
+
+/**
+ * A serializer context (additional settings for a serializer)
+ */
+struct luaL_serializer_ctx {
+	/** Version of a format for an error transmission */
+	uint8_t err_format_ver;
+};
+
 extern int luaL_nil_ref;
 extern int luaL_map_metatable_ref;
 extern int luaL_array_metatable_ref;

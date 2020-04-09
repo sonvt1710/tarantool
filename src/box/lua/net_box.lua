@@ -1047,6 +1047,18 @@ local function new_sm(host, port, opts, connection, greeting)
     if opts.wait_connected ~= false then
         remote._transport.wait_state('active', tonumber(opts.wait_connected))
     end
+
+    -- Set extended error format for session.
+    if opts.error_extended then
+        local ext_err_supported = version_at_least(remote.peer_version_id, 2, 4, 1)
+        if not ext_err_supported then
+            box.error(box.error.PROC_LUA,
+                      "Server doesn't support extended error format")
+        end
+        remote.space._session_settings:update('iproto_error_format',
+                                              {{'=', 2, 1}})
+    end
+
     return remote
 end
 
