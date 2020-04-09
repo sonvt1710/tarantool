@@ -1,7 +1,6 @@
-#ifndef TARANTOOL_LUA_ERROR_H
-#define TARANTOOL_LUA_ERROR_H
+#pragma once
 /*
- * Copyright 2010-2018, Tarantool AUTHORS, please see AUTHORS file.
+ * Copyright 2010-2020, Tarantool AUTHORS, please see AUTHORS file.
  *
  * Redistribution and use in source and binary forms, with or
  * without modification, are permitted provided that the following
@@ -30,50 +29,21 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-#include <lua.h>
-#include <lauxlib.h> /* luaL_error */
 
 #if defined(__cplusplus)
 extern "C" {
 #endif /* defined(__cplusplus) */
 
-/** \cond public */
-struct error;
+#include "stdint.h"
 
-/**
- * Re-throws the last Tarantool error as a Lua object.
- * \sa lua_error()
- * \sa box_error_last()
- */
-LUA_API int
-luaT_error(lua_State *L);
-
-/**
- * Return nil as the first return value and an error as the
- * second. The error is received using box_error_last().
- *
- * @param L Lua stack.
- */
-LUA_API int
-luaT_push_nil_and_error(lua_State *L);
+struct mpstream;
 
 void
-luaT_pusherror(struct lua_State *L, struct error *e);
-/** \endcond public */
-
-extern uint32_t CTID_CONST_STRUCT_ERROR_REF;
+error_to_mpstream(struct error *error, struct mpstream *stream);
 
 struct error *
-luaL_iserror(struct lua_State *L, int narg);
-
-struct error *
-luaL_checkerror(struct lua_State *L, int narg);
-
-void
-tarantool_lua_error_init(struct lua_State *L);
+error_unpack(const char **data, uint32_t len);
 
 #if defined(__cplusplus)
 } /* extern "C" */
 #endif /* defined(__cplusplus) */
-
-#endif /* TARANTOOL_LUA_ERROR_H */

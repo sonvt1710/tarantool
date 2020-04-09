@@ -54,6 +54,9 @@ BuildXlogGapError(const char *file, unsigned line,
 		  const struct vclock *from, const struct vclock *to);
 
 struct error *
+ReBuildXlogGapError(const char *file, unsigned line, const char *msg);
+
+struct error *
 BuildCustomError(const char *file, unsigned int line, const char *custom_type);
 
 /** \cond public */
@@ -250,6 +253,8 @@ public:
 	~AccessDeniedError()
 	{
 		free(m_object_name);
+		free(m_object_type);
+		free(m_access_type);
 	}
 
 	const char *
@@ -272,11 +277,11 @@ public:
 
 private:
 	/** Type of object the required access was denied to */
-	const char *m_object_type;
+	char *m_object_type;
 	/** Name of object the required access was denied to */
 	char *m_object_name;
 	/** Type of declined access */
-	const char *m_access_type;
+	char *m_access_type;
 };
 
 /**
@@ -306,6 +311,8 @@ struct XlogGapError: public XlogError
 {
 	XlogGapError(const char *file, unsigned line,
 		     const struct vclock *from, const struct vclock *to);
+	XlogGapError(const char *file, unsigned line,
+		     const char *msg);
 
 	virtual void raise() { throw this; }
 };

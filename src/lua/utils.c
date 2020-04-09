@@ -46,6 +46,7 @@ static uint32_t CTID_STRUCT_IBUF_PTR;
 static uint32_t CTID_CHAR_PTR;
 static uint32_t CTID_CONST_CHAR_PTR;
 uint32_t CTID_DECIMAL;
+uint32_t CTID_CONST_STRUCT_ERROR_REF;
 
 
 void *
@@ -445,7 +446,7 @@ lua_field_inspect_ucdata(struct lua_State *L, struct luaL_serializer *cfg,
 		lua_pcall(L, 1, 1, 0);
 		/* replace obj with the unpacked value */
 		lua_replace(L, idx);
-		if (luaL_tofield(L, cfg, idx, field) < 0)
+		if (luaL_tofield(L, cfg, NULL, idx, field) < 0)
 			luaT_error(L);
 	} /* else ignore lua_gettable exceptions */
 	lua_settop(L, top); /* remove temporary objects */
@@ -508,7 +509,7 @@ lua_field_try_serialize(struct lua_State *L)
 		/* copy object itself */
 		lua_pushvalue(L, 1);
 		lua_call(L, 1, 1);
-		s->is_error = (luaL_tofield(L, cfg, -1, field) != 0);
+		s->is_error = (luaL_tofield(L, cfg, NULL, -1, field) != 0);
 		s->is_value_returned = true;
 		return 1;
 	}
@@ -634,12 +635,13 @@ lua_field_tostring(struct lua_State *L, struct luaL_serializer *cfg, int idx,
 	lua_call(L, 1, 1);
 	lua_replace(L, idx);
 	lua_settop(L, top);
-	if (luaL_tofield(L, cfg, idx, field) < 0)
+	if (luaL_tofield(L, cfg, NULL, idx, field) < 0)
 		luaT_error(L);
 }
 
 int
-luaL_tofield(struct lua_State *L, struct luaL_serializer *cfg, int index,
+luaL_tofield(struct lua_State *L, struct luaL_serializer *cfg,
+	     struct luaL_serializer_ctx *ctx, int index,
 	     struct luaL_field *field)
 {
 	if (index < 0)
@@ -746,6 +748,10 @@ luaL_tofield(struct lua_State *L, struct luaL_serializer *cfg, int index,
 			if (cd->ctypeid == CTID_DECIMAL) {
 				field->ext_type = MP_DECIMAL;
 				field->decval = (decimal_t *) cdata;
+			} else if (cd->ctypeid == CTID_CONST_STRUCT_ERROR_REF &&
+				   ctx &&
+				   ctx->err_format_ver == ERR_FORMAT_EX) {
+				field->ext_type = MP_ERROR;
 			} else {
 				field->ext_type = MP_UNKNOWN_EXTENSION;
 			}
@@ -792,8 +798,8 @@ luaL_convertfield(struct lua_State *L, struct luaL_serializer *cfg, int idx,
 {
 	if (idx < 0)
 		idx = lua_gettop(L) + idx + 1;
-	assert(field->type == MP_EXT && field->ext_type == MP_UNKNOWN_EXTENSION); /* must be called after tofield() */
 
+	assert(field->type == MP_EXT && field->ext_type == MP_UNKNOWN_EXTENSION); /* must be called after tofield() */
 	if (cfg->encode_load_metatables) {
 		int type = lua_type(L, idx);
 		if (type == LUA_TCDATA) {

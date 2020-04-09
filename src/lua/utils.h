@@ -381,6 +381,7 @@ struct luaL_field {
  *
  * @param L stack
  * @param cfg configuration
+ * @param serializer_ctx the Lua serializer context
  * @param index stack index
  * @param field conversion result
  *
@@ -388,7 +389,8 @@ struct luaL_field {
  * @retval -1 Error.
  */
 int
-luaL_tofield(struct lua_State *L, struct luaL_serializer *cfg, int index,
+luaL_tofield(struct lua_State *L, struct luaL_serializer *cfg,
+	     struct luaL_serializer_ctx *ctx, int index,
 	     struct luaL_field *field);
 
 /**
@@ -427,7 +429,7 @@ static inline void
 luaL_checkfield(struct lua_State *L, struct luaL_serializer *cfg, int idx,
 		struct luaL_field *field)
 {
-	if (luaL_tofield(L, cfg, idx, field) < 0)
+	if (luaL_tofield(L, cfg, NULL, idx, field) < 0)
 		luaT_error(L);
 	if (field->type != MP_EXT || field->ext_type != MP_UNKNOWN_EXTENSION)
 		return;

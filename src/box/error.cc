@@ -253,12 +253,29 @@ XlogGapError::XlogGapError(const char *file, unsigned line,
 		 (long long) vclock_sum(to), s_to ? s_to : "");
 }
 
+XlogGapError::XlogGapError(const char *file, unsigned line,
+			   const char *msg)
+		: XlogError(&type_XlogGapError, file, line)
+{
+	error_format_msg(this, "%s", msg);
+}
+
 struct error *
 BuildXlogGapError(const char *file, unsigned line,
 		  const struct vclock *from, const struct vclock *to)
 {
 	try {
 		return new XlogGapError(file, line, from, to);
+	} catch (OutOfMemory *e) {
+		return e;
+	}
+}
+
+struct error *
+ReBuildXlogGapError(const char *file, unsigned line, const char *msg)
+{
+	try {
+		return new XlogGapError(file, line, msg);
 	} catch (OutOfMemory *e) {
 		return e;
 	}
@@ -289,15 +306,8 @@ AccessDeniedError::AccessDeniedError(const char *file, unsigned int line,
 
 	struct on_access_denied_ctx ctx = {access_type, object_type, object_name};
 	trigger_run(&on_access_denied, (void *) &ctx);
-	/*
-	 * We want to use ctx parameters as error parameters
-	 * later, so we have to alloc space for it.
-	 * As m_access_type and m_object_type are constant
-	 * literals they are statically  allocated. We must copy
-	 * only m_object_name.
-	 */
-	m_object_type = object_type;
-	m_access_type = access_type;
+	m_object_type = strdup(object_type);
+	m_access_type = strdup(access_type);
 	m_object_name = strdup(object_name);
 }
 

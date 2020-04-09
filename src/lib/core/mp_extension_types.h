@@ -40,8 +40,9 @@
  * You may assign values in range [0, 127]
  */
 enum mp_extension_type {
-    MP_UNKNOWN_EXTENSION = 0,
-    MP_DECIMAL = 1,
+	MP_UNKNOWN_EXTENSION = 0,
+	MP_DECIMAL = 1,
+	MP_ERROR = 2
 };
 
 #endif

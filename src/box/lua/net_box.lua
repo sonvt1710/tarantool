@@ -1050,7 +1050,7 @@ local function new_sm(host, port, opts, connection, greeting)
 
     -- Set extended error format for session.
     if opts.error_extended then
-        local ext_err_supported = version_at_least(remote.peer_version_id, 2, 4, 1)
+        local ext_err_supported = version_at_least(remote.peer_version_id, 2, 4, 0)
         if not ext_err_supported then
             box.error(box.error.PROC_LUA,
                       "Server doesn't support extended error format")

@@ -34,8 +34,6 @@
 #include <fiber.h>
 #include "utils.h"
 
-static int CTID_CONST_STRUCT_ERROR_REF = 0;
-
 struct error *
 luaL_iserror(struct lua_State *L, int narg)
 {
