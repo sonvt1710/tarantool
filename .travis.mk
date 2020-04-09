@@ -151,7 +151,7 @@ test_static_docker_build:
 
 # since Python 2 is EOL it's latest commit from tapped local formula is used
 OSX_PKGS=openssl readline curl icu4c libiconv zlib autoconf automake libtool \
-	cmake file://$${PWD}/tools/brew_taps/tntpython2.rb
+	cmake
 
 deps_osx:
 	# install brew using command from Homebrew repository instructions:
@@ -164,7 +164,18 @@ deps_osx:
 	# try to install the packages either upgrade it to avoid of fails
 	# if the package already exists with the previous version
 	brew install --force ${OSX_PKGS} || brew upgrade ${OSX_PKGS}
-	pip install --force-reinstall -r test-run/requirements.txt
+	# Formula tntpython2.rb consist of the packages which download target
+	# host does not have valid SSL certificate, disabled curl SSL
+	# check for it.
+	echo insecure >>$${HOME}/.curlrc
+	brew install --force file://$${PWD}/tools/brew_taps/tntpython2.rb || true
+	sed '$$d' $${HOME}/.curlrc >$${HOME}/.curlrc.new && \
+		mv $${HOME}/.curlrc.new $${HOME}/.curlrc
+	python2 -V
+	pip install --trusted-host files.pythonhosted.org \
+		--upgrade pip setuptools
+	pip install --trusted-host files.pythonhosted.org \
+		--force-reinstall -r test-run/requirements.txt
 
 build_osx:
 	cmake . -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_WERROR=ON ${CMAKE_EXTRA_PARAMS}
