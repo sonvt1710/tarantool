@@ -47,6 +47,8 @@ local IPROTO_ERROR_KEY     = 0x31
 local IPROTO_ERROR_STACK   = 0x52
 local IPROTO_ERROR_CODE    = 0x01
 local IPROTO_ERROR_MESSAGE = 0x02
+local IPROTO_ERROR_TRACEBACK = 0x03
+local IPROTO_ERROR_CUSTOM_TYPE = 0x04
 local IPROTO_GREETING_SIZE = 128
 local IPROTO_CHUNK_KEY     = 128
 local IPROTO_OK_KEY        = 0
@@ -287,7 +289,24 @@ local function create_transport(host, port, user, password, callback,
                     local error = self.response[i]
                     local code = error[IPROTO_ERROR_CODE]
                     local msg = error[IPROTO_ERROR_MESSAGE]
-                    local new_err = box.error.new({code = code, reason = msg})
+                    local custom_type = error[IPROTO_ERROR_CUSTOM_TYPE]
+                    local traceback = error[IPROTO_ERROR_TRACEBACK]
+
+                    local new_err
+                    if custom_type then
+                        new_err = box.error.new({type = custom_type,
+                                                 reason = msg,
+                                                 traceback = false})
+                    else
+                        new_err = box.error.new({code = code,
+                                                 reason = msg,
+                                                 traceback = false})
+                    end
+
+                    if traceback then
+                        box.error.set_lua_traceback(new_err, traceback)
+                    end
+
                     new_err:set_prev(prev)
                     prev = new_err
                 end

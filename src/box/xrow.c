@@ -494,11 +494,28 @@ mpstream_iproto_encode_error(struct mpstream *stream, const struct error *error)
 	mpstream_encode_uint(stream, IPROTO_ERROR_STACK);
 	mpstream_encode_array(stream, err_cnt);
 	for (const struct error *it = error; it != NULL; it = it->cause) {
-		mpstream_encode_map(stream, 2);
+		/* Code and message are necessary fields */
+		uint32_t map_size = 2;
+		const char *custom_type = NULL;
+		if (it->lua_traceback)
+			++map_size;
+		if (strcmp(box_error_type(it), "CustomError") == 0) {
+			++map_size;
+			custom_type = box_custom_error_type(it);
+		}
+		mpstream_encode_map(stream, map_size);
 		mpstream_encode_uint(stream, IPROTO_ERROR_CODE);
 		mpstream_encode_uint(stream, box_error_code(it));
 		mpstream_encode_uint(stream, IPROTO_ERROR_MESSAGE);
 		mpstream_encode_str(stream, it->errmsg);
+		if (it->lua_traceback) {
+			mpstream_encode_uint(stream, IPROTO_ERROR_TRACEBACK);
+			mpstream_encode_str(stream, it->lua_traceback);
+		}
+		if (custom_type) {
+			mpstream_encode_uint(stream, IPROTO_ERROR_CUSTOM_TYPE);
+			mpstream_encode_str(stream, custom_type);
+		}
 	}
 }
 

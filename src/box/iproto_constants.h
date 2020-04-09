@@ -154,6 +154,8 @@ enum iproto_ballot_key {
 enum iproto_error_key {
 	IPROTO_ERROR_CODE = 0x01,
 	IPROTO_ERROR_MESSAGE = 0x02,
+	IPROTO_ERROR_TRACEBACK = 0x03,
+	IPROTO_ERROR_CUSTOM_TYPE = 0x04,
 };
 
 #define bit(c) (1ULL<<IPROTO_##c)
