@@ -92,7 +92,7 @@ variables:
   image: ${IMAGE_PERF_BUILT}
   stage: perf
   tags:
-    - deploy_test
+    - docker_perf
   script:
     - ${GITLAB_MAKE} perf_run
 
@@ -190,7 +190,7 @@ perf_bootstrap:
   <<: *perf_only_definition
   stage: test
   tags:
-    - deploy_test
+    - perf
   script:
     - ${GITLAB_MAKE} perf_prepare
 
