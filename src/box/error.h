@@ -53,6 +53,9 @@ struct error *
 BuildXlogGapError(const char *file, unsigned line,
 		  const struct vclock *from, const struct vclock *to);
 
+struct error *
+BuildCustomError(const char *file, unsigned int line, const char *custom_type);
+
 /** \cond public */
 
 struct error;
@@ -138,6 +141,14 @@ box_error_set(const char *file, unsigned line, uint32_t code,
 /** \endcond public */
 
 /**
+ * Return the error custom type,
+ * \param error
+ * \return pointer to custom error type. On error, return NULL
+ */
+const char *
+box_custom_error_type(const box_error_t *e);
+
+/**
  * Add error to the diagnostic area. In contrast to box_error_set()
  * it does not replace previous error being set, but rather link
  * them into list.
@@ -155,15 +166,24 @@ box_error_add(const char *file, unsigned line, uint32_t code,
 
 /**
  * Construct error object without setting it in the diagnostics
- * area. On the memory allocation fail returns NULL.
+ * area. On the memory allocation fail returns  OutOfMemory error.
  */
 struct error *
 box_error_new(const char *file, unsigned line, uint32_t code,
 	      const char *fmt, ...);
 
+/**
+ * Construct error object without setting it in the diagnostics
+ * area. On the memory allocation fail returns OutOfMemory error.
+ */
+struct error *
+box_custom_error_new(const char *file, unsigned line,
+		     const char *custom, const char *fmt, ...);
+
 extern const struct type_info type_ClientError;
 extern const struct type_info type_XlogError;
 extern const struct type_info type_AccessDeniedError;
+extern const struct type_info type_CustomError;
 
 #if defined(__cplusplus)
 } /* extern "C" */
@@ -288,6 +308,22 @@ struct XlogGapError: public XlogError
 		     const struct vclock *from, const struct vclock *to);
 
 	virtual void raise() { throw this; }
+};
+
+class CustomError: public ClientError
+{
+public:
+	CustomError(const char *file, unsigned int line,
+		    const char *custom_type);
+
+	const char*
+	custom_type()
+	{
+		return m_custom_type;
+	}
+private:
+	/** Custom type name */
+	char m_custom_type[64];
 };
 
 #endif /* defined(__cplusplus) */

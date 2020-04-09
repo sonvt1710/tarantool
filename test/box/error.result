@@ -36,11 +36,12 @@ e:unpack()
  | ---
  | - traceback: Traceback is absent
  |   code: 1
+ |   base_type: ClientError
+ |   type: ClientError
+ |   message: Illegal parameters, bla bla
  |   trace:
  |   - file: '[C]'
  |     line: 4294967295
- |   type: ClientError
- |   message: Illegal parameters, bla bla
  | ...
 e.type
  | ---
@@ -106,7 +107,7 @@ e
  | ...
 box.error.new()
  | ---
- | - error: 'Usage: box.error.new(code, args)'
+ | - error: 'Usage: box.error.new(code, args) or box.error.new(type, args)'
  | ...
 
 --
@@ -431,6 +432,7 @@ t;
  |   210: box.error.SQL_PREPARE
  |   211: box.error.WRONG_QUERY_ID
  |   212: box.error.SEQUENCE_NOT_STARTED
+ |   213: box.error.CUSTOM_ERROR
  | ...
 
 test_run:cmd("setopt delimiter ''");
@@ -489,7 +491,7 @@ assert(box.error.last() == nil)
 --
 box.error.new(err)
  | ---
- | - error: 'Usage: box.error.new(code, args)'
+ | - error: 'Usage: box.error.new(code, args) or box.error.new(type, args)'
  | ...
 
 -- box.error() is supposed to re-throw last diagnostic error.

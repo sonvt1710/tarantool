@@ -42,6 +42,74 @@ extern "C" {
 #include "lua/utils.h"
 #include "box/error.h"
 
+struct error_args {
+	uint32_t code;
+	const char *reason;
+	const char *custom;
+	bool tb_mode;
+	bool tb_parsed;
+};
+
+static int
+luaT_error_parse_args(struct lua_State *L, int top_base,
+		      struct error_args *args)
+{
+	int top = lua_gettop(L);
+	int top_type = lua_type(L, top_base);
+	if (top >= top_base &&
+	    (top_type == LUA_TNUMBER || top_type == LUA_TSTRING)) {
+		if (top_type == LUA_TNUMBER) {
+			args->code = lua_tonumber(L, top_base);
+		} else if (top_type == LUA_TSTRING) {
+			args->code = ER_CUSTOM_ERROR;
+			args->custom = lua_tostring(L, top_base);
+		} else {
+			return -1;
+		}
+		args->reason = tnt_errcode_desc(args->code);
+		if (top > top_base) {
+			/* Call string.format(reason, ...) to format message */
+			lua_getglobal(L, "string");
+			if (lua_isnil(L, -1))
+				return 0;
+			lua_getfield(L, -1, "format");
+			if (lua_isnil(L, -1))
+				return 0;
+			lua_pushstring(L, args->reason);
+			for (int i = top_base + 1; i <= top; i++)
+				lua_pushvalue(L, i);
+			lua_call(L, top - top_base + 1, 1);
+			args->reason = lua_tostring(L, -1);
+		} else if (strchr(args->reason, '%') != NULL) {
+			/* Missing arguments to format string */
+			return -1;
+		}
+	} else if (top == top_base && top_type == LUA_TTABLE) {
+		lua_getfield(L, top_base, "code");
+		if (lua_isnil(L, -1) == 0)
+			args->code = lua_tonumber(L, -1);
+		lua_pop(L, 1);
+		lua_getfield(L, top_base, "reason");
+		if (lua_isnil(L, -1) == 0)
+			args->reason = lua_tostring(L, -1);
+		lua_pop(L, 1);
+		lua_getfield(L, top_base, "type");
+		if (lua_isnil(L, -1) == 0)
+			args->custom = lua_tostring(L, -1);
+		lua_pop(L, 1);
+		lua_getfield(L, top_base, "traceback");
+		if (lua_isboolean(L, -1)) {
+			args->tb_parsed = true;
+			args->tb_mode = lua_toboolean(L, -1);
+		}
+		lua_pop(L, -1);
+	} else {
+		return -1;
+	}
+
+	return 0;
+}
+
 /**
  * Parse Lua arguments (they can come as single table
  * f({code : number, reason : string}) or as separate members
@@ -52,54 +120,23 @@ extern "C" {
 static struct error *
 luaT_error_create(lua_State *L, int top_base)
 {
-	uint32_t code = 0;
-	const char *reason = NULL;
-	bool tb_parsed = false;
-	bool tb_mode = false;
-	const char *file = "";
-	unsigned line = 0;
-	lua_Debug info;
-	int top = lua_gettop(L);
-	if (top >= top_base && lua_type(L, top_base) == LUA_TNUMBER) {
-		code = lua_tonumber(L, top_base);
-		reason = tnt_errcode_desc(code);
-		if (top > top_base) {
-			/* Call string.format(reason, ...) to format message */
-			lua_getglobal(L, "string");
-			if (lua_isnil(L, -1))
-				goto raise;
-			lua_getfield(L, -1, "format");
-			if (lua_isnil(L, -1))
-				goto raise;
-			lua_pushstring(L, reason);
-			for (int i = top_base + 1; i <= top; i++)
-				lua_pushvalue(L, i);
-			lua_call(L, top - top_base + 1, 1);
-			reason = lua_tostring(L, -1);
-		} else if (strchr(reason, '%') != NULL) {
-			/* Missing arguments to format string */
-			return NULL;
-		}
-	} else if (top == top_base && lua_istable(L, top_base)) {
-		lua_getfield(L, top_base, "code");
-		code = lua_tonumber(L, -1);
-		lua_pop(L, 1);
-		lua_getfield(L, top_base, "reason");
-		reason = lua_tostring(L, -1);
-		if (reason == NULL)
-			reason = "";
-		lua_pop(L, 1);
-		lua_getfield(L, top_base, "traceback");
-		if (lua_isboolean(L, -1)) {
-			tb_parsed = true;
-			tb_mode = lua_toboolean(L, -1);
-		}
-		lua_pop(L, -1);
-	} else {
+	struct error_args args;
+	args.code = UINT32_MAX;
+	args.reason = NULL;
+	args.custom = NULL;
+	args.tb_mode = false;
+	args.tb_parsed = false;
+
+	if (luaT_error_parse_args(L, top_base, &args) != 0) {
 		return NULL;
 	}
 
-raise:
+	if (args.reason == NULL)
+		args.reason = "";
+
+	const char *file = "";
+	unsigned line = 0;
+	lua_Debug info;
 	if (lua_getstack(L, 1, &info) && lua_getinfo(L, "Sl", &info)) {
 		if (*info.short_src) {
 			file = info.short_src;
@@ -111,9 +148,16 @@ raise:
 		line = info.currentline;
 	}
 
-	struct error *err = box_error_new(file, line, code, "%s", reason);
-	if (tb_parsed)
-		err->traceback_mode = tb_mode;
+	struct error *err = NULL;
+	if (args.custom) {
+		err = box_custom_error_new(file, line, args.custom,
+					   "%s", args.reason);
+	} else {
+		err = box_error_new(file, line, args.code, "%s", args.reason);
+	}
+
+	if (args.tb_parsed)
+		err->traceback_mode = args.tb_mode;
 
 	return err;
 }
@@ -162,13 +206,32 @@ luaT_error_last(lua_State *L)
 static int
 luaT_error_new(lua_State *L)
 {
-	if (lua_gettop(L) == 0)
-		return luaL_error(L, "Usage: box.error.new(code, args)");
+	if (lua_gettop(L) == 0) {
+		return luaL_error(L, "Usage: box.error.new(code, args) or "\
+				     "box.error.new(type, args)");
+	}
 	struct error *e = luaT_error_create(L, 1);
-	if (e == NULL)
-		return luaL_error(L, "Usage: box.error.new(code, args)");
+	if (e == NULL) {
+		return luaL_error(L, "Usage: box.error.new(code, args) or "\
+				     "box.error.new(type, args)");
+	}
 	lua_settop(L, 0);
 	luaT_pusherror(L, e);
+	return 1;
+}
+
+static int
+luaT_error_custom_type(lua_State *L)
+{
+	struct error *e = luaL_checkerror(L, -1);
+
+	const char *custom_type = box_custom_error_type(e);
+	if (custom_type == NULL) {
+		lua_pushfstring(L, "The error has't custom type");
+		return 1;
+	}
+
+	lua_pushstring(L, custom_type);
 	return 1;
 }
 
@@ -327,6 +390,10 @@ box_lua_error_init(struct lua_State *L) {
 		{
 			lua_pushcfunction(L, luaT_error_cfg);
 			lua_setfield(L, -2, "cfg");
+		}
+		{
+			lua_pushcfunction(L, luaT_error_custom_type);
+			lua_setfield(L, -2, "custom_type");
 		}
 		lua_setfield(L, -2, "__index");
 	}

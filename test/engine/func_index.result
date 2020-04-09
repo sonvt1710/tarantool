@@ -278,14 +278,15 @@ e:unpack()
  | ---
  | - traceback: Traceback is absent
  |   code: 198
+ |   base_type: ClientError
+ |   type: ClientError
+ |   prev: '[string "return function(tuple)                 local ..."]:1: attempt to
+ |     call global ''require'' (a nil value)'
+ |   message: 'Failed to build a key for functional index ''idx'' of space ''withdata'':
+ |     can''t evaluate function'
  |   trace:
  |   - file: <filename>
  |     line: <line>
- |   type: ClientError
- |   message: 'Failed to build a key for functional index ''idx'' of space ''withdata'':
- |     can''t evaluate function'
- |   prev: '[string "return function(tuple)                 local ..."]:1: attempt to
- |     call global ''require'' (a nil value)'
  | ...
 e = e.prev
  | ---
@@ -293,12 +294,13 @@ e = e.prev
 e:unpack()
  | ---
  | - traceback: Traceback is absent
- |   trace:
- |   - file: <filename>
- |     line: <line>
+ |   base_type: LuajitError
  |   type: LuajitError
  |   message: '[string "return function(tuple)                 local ..."]:1: attempt
  |     to call global ''require'' (a nil value)'
+ |   trace:
+ |   - file: <filename>
+ |     line: <line>
  | ...
 e = e.prev
  | ---

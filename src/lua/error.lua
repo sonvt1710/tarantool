@@ -78,6 +78,16 @@ local function reflection_get(err, method)
 end
 
 local function error_type(err)
+    local res
+    if ffi.string(err._type.name) == 'CustomError' then
+        res = box.error.custom_type(err)
+    else
+        res = ffi.string(err._type.name)
+    end
+    return res
+end
+
+local function error_base_type(err)
     return ffi.string(err._type.name)
 end
 
@@ -141,6 +151,7 @@ local error_fields = {
     ["errno"]       = error_errno;
     ["prev"]        = error_prev;
     ["traceback"]   = error_traceback;
+    ["base_type"]    = error_base_type
 }
 
 local function error_unpack(err)
