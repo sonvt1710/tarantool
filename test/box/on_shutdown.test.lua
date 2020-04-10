@@ -65,3 +65,20 @@ test_run:grep_log('test', 'signal', nil, {noreset=true})
 test_run:cmd("stop server test")
 test_run:cmd("cleanup server test")
 test_run:cmd("delete server test")
+
+--
+-- gh-4703: Make sure that on_shutdown triggers are executed after
+-- EOF.
+--
+fio = require("fio")
+file_name = "on_shutdown_triggered.txt"
+test_run:cmd("setopt delimiter ';'");
+on_shutdown_cmd = "box.ctl.on_shutdown(function() local fio = require('fio') "..
+    "fio.open('"..file_name.."', {'O_CREAT', 'O_TRUNC', 'O_WRONLY'}, 777):clo"..
+    "se() end)";
+test_run:cmd("setopt delimiter ''");
+server = io.popen('tarantool -i', 'w')
+server:write(on_shutdown_cmd)
+server:close()
+fio.path.lexists(file_name) == true
+os.remove(file_name)
