@@ -747,6 +747,10 @@ tarantool_lua_export_syms(void)
 		/* Submodules. */
 		(void *)tarantool_lua_digest_export_syms,
 		(void *)tarantool_lua_socket_export_syms,
+
+		/* Own symbols. */
+		(void *)tarantool_lua_slab_cache,
+		(void *)&tarantool_lua_ibuf,
 	};
 	return syms;
 }

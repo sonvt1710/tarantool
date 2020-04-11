@@ -2,7 +2,6 @@
 
 # FFI
 
-tarantool_lua_slab_cache
 ibuf_create
 ibuf_reinit
 ibuf_destroy
@@ -31,7 +30,6 @@ tnt_iconv
 exception_get_string
 exception_get_int
 
-tarantool_lua_ibuf
 uuid_nil
 tt_uuid_create
 tt_uuid_str
