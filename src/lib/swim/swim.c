@@ -2421,3 +2421,35 @@ swim_member_is_payload_up_to_date(const struct swim_member *member)
 {
 	return member->is_payload_up_to_date;
 }
+
+void **
+swim_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)swim_add_member,
+		(void *)swim_broadcast,
+		(void *)swim_cfg,
+		(void *)swim_is_configured,
+		(void *)swim_iterator_close,
+		(void *)swim_iterator_next,
+		(void *)swim_iterator_open,
+		(void *)swim_member_by_uuid,
+		(void *)swim_member_incarnation,
+		(void *)swim_member_is_dropped,
+		(void *)swim_member_is_payload_up_to_date,
+		(void *)swim_member_payload,
+		(void *)swim_member_ref,
+		(void *)swim_member_status,
+		(void *)swim_member_unref,
+		(void *)swim_member_uri,
+		(void *)swim_member_uuid,
+		(void *)swim_probe_member,
+		(void *)swim_quit,
+		(void *)swim_remove_member,
+		(void *)swim_self,
+		(void *)swim_set_codec,
+		(void *)swim_set_payload,
+		(void *)swim_size,
+	};
+	return syms;
+}

@@ -1,32 +1,5 @@
 # Symbols exported by the main Tarantool executable
 
-# FFI
-
-swim_is_configured
-swim_cfg
-swim_set_payload
-swim_set_codec
-swim_add_member
-swim_remove_member
-swim_probe_member
-swim_broadcast
-swim_size
-swim_quit
-swim_self
-swim_member_by_uuid
-swim_member_status
-swim_iterator_open
-swim_iterator_next
-swim_iterator_close
-swim_member_uri
-swim_member_uuid
-swim_member_incarnation
-swim_member_payload
-swim_member_ref
-swim_member_unref
-swim_member_is_dropped
-swim_member_is_payload_up_to_date
-
 # Module API
 
 fiber_cond_new

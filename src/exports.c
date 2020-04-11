@@ -64,6 +64,7 @@ EXPORT(random_export_syms);
 EXPORT(salad_guava_export_syms);
 EXPORT(say_export_syms);
 EXPORT(scramble_export_syms);
+EXPORT(swim_export_syms);
 EXPORT(tarantool_lua_export_syms);
 EXPORT(title_export_syms);
 EXPORT(tt_uuid_export_syms);
@@ -89,6 +90,7 @@ export_syms(void)
 		salad_guava_export_syms,
 		say_export_syms,
 		scramble_export_syms,
+		swim_export_syms,
 		tarantool_lua_export_syms,
 		title_export_syms,
 		tt_uuid_export_syms,
