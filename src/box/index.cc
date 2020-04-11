@@ -767,3 +767,22 @@ disabled_index_replace(struct index *index, struct tuple *old_tuple,
 }
 
 /* }}} */
+
+extern "C" void **
+box_index_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_index_bsize,
+		(void *)box_index_count,
+		(void *)box_index_get,
+		(void *)box_index_iterator,
+		(void *)box_index_len,
+		(void *)box_index_max,
+		(void *)box_index_min,
+		(void *)box_index_random,
+		(void *)box_iterator_next,
+		(void *)box_iterator_free,
+		(void *)box_tuple_extract_key,
+	};
+	return syms;
+}
