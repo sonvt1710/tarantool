@@ -56,6 +56,7 @@ EXPORT(fiber_export_syms);
 EXPORT(port_export_syms);
 EXPORT(random_export_syms);
 EXPORT(salad_guava_export_syms);
+EXPORT(say_export_syms);
 EXPORT(scramble_export_syms);
 EXPORT(tarantool_lua_export_syms);
 EXPORT(title_export_syms);
@@ -73,6 +74,7 @@ export_syms(void)
 		port_export_syms,
 		random_export_syms,
 		salad_guava_export_syms,
+		say_export_syms,
 		scramble_export_syms,
 		tarantool_lua_export_syms,
 		title_export_syms,

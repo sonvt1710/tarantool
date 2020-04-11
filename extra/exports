@@ -7,8 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-log_level
-log_format
 uri_parse
 uri_format
 PMurHash32
@@ -24,13 +22,8 @@ mp_decode_extl
 mp_sizeof_decimal
 decimal_unpack
 
-log_type
-say_set_log_level
-say_logrotate
-say_set_log_format
 tarantool_uptime
 tarantool_exit
-log_pid
 space_by_id
 space_run_triggers
 space_bsize
@@ -75,7 +68,6 @@ swim_member_is_payload_up_to_date
 
 # Module API
 
-_say
 fiber_cond_new
 fiber_cond_delete
 fiber_cond_signal

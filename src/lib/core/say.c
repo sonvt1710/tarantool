@@ -1243,3 +1243,19 @@ log_say(struct log *log, int level, const char *filename, int line,
 	va_end(ap);
 	return total;
 }
+
+void **
+say_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)&log_format,
+		(void *)&log_level,
+		(void *)&log_pid,
+		(void *)log_type,
+		(void *)say_logrotate,
+		(void *)say_set_log_format,
+		(void *)say_set_log_level,
+		(void *)&_say,
+	};
+	return syms;
+}
