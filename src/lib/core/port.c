@@ -35,3 +35,12 @@ port_destroy(struct port *port)
 {
 	port->vtab->destroy(port);
 }
+
+void **
+port_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)port_destroy,
+	};
+	return syms;
+}
