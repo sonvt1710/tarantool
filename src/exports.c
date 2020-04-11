@@ -53,6 +53,7 @@ EXPORT(box_schema_export_syms);
 EXPORT(box_space_export_syms);
 EXPORT(clock_export_syms);
 EXPORT(crc32_export_syms);
+EXPORT(crypto_export_syms);
 EXPORT(csv_export_syms);
 EXPORT(exception_export_syms);
 EXPORT(fiber_export_syms);
@@ -77,6 +78,7 @@ export_syms(void)
 		box_space_export_syms,
 		clock_export_syms,
 		crc32_export_syms,
+		crypto_export_syms,
 		csv_export_syms,
 		exception_export_syms,
 		fiber_export_syms,

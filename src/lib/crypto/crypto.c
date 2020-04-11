@@ -390,3 +390,20 @@ crypto_HMAC_CTX_free(HMAC_CTX *ctx)
 	HMAC_CTX_free(ctx);
 #endif
 }
+
+void **
+crypto_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)crypto_EVP_MD_CTX_free,
+		(void *)crypto_EVP_MD_CTX_new,
+		(void *)crypto_HMAC_CTX_free,
+		(void *)crypto_HMAC_CTX_new,
+		(void *)crypto_stream_append,
+		(void *)crypto_stream_begin,
+		(void *)crypto_stream_commit,
+		(void *)crypto_stream_delete,
+		(void *)crypto_stream_new,
+	};
+	return syms;
+}

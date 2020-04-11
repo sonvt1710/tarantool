@@ -7,16 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-crypto_EVP_MD_CTX_new
-crypto_EVP_MD_CTX_free
-crypto_HMAC_CTX_new
-crypto_HMAC_CTX_free
-crypto_stream_new
-crypto_stream_begin
-crypto_stream_append
-crypto_stream_commit
-crypto_stream_delete
-
 lua_static_aligned_alloc
 
 swim_is_configured
