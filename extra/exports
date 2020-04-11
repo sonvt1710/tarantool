@@ -2,11 +2,6 @@
 
 # Module API
 
-box_latch_new
-box_latch_delete
-box_latch_lock
-box_latch_trylock
-box_latch_unlock
 string_strip_helper
 
 # Lua / LuaJIT

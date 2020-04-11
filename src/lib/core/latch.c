@@ -70,3 +70,16 @@ box_latch_unlock(box_latch_t* bl)
 {
 	latch_unlock(&bl->l);
 }
+
+void **
+box_latch_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_latch_delete,
+		(void *)box_latch_lock,
+		(void *)box_latch_new,
+		(void *)box_latch_trylock,
+		(void *)box_latch_unlock,
+	};
+	return syms;
+}
