@@ -767,3 +767,31 @@ mp_str(const char *data)
 		return "<failed to format message pack>";
 	return buf;
 }
+
+void **
+box_tuple_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_tuple_format,
+		(void *)box_tuple_format_default,
+		(void *)box_tuple_format_new,
+		(void *)box_tuple_format_ref,
+		(void *)box_tuple_format_unref,
+		(void *)box_tuple_bsize,
+		(void *)box_tuple_field,
+		(void *)box_tuple_field_count,
+		(void *)box_tuple_iterator,
+		(void *)box_tuple_iterator_free,
+		(void *)box_tuple_new,
+		(void *)box_tuple_next,
+		(void *)box_tuple_position,
+		(void *)box_tuple_ref,
+		(void *)box_tuple_rewind,
+		(void *)box_tuple_seek,
+		(void *)box_tuple_to_buf,
+		(void *)box_tuple_unref,
+		(void *)box_tuple_update,
+		(void *)box_tuple_upsert,
+	};
+	return syms;
+}

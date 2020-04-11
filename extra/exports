@@ -2,26 +2,6 @@
 
 # Module API
 
-box_tuple_format_default
-box_tuple_new
-box_tuple_ref
-box_tuple_unref
-box_tuple_field_count
-box_tuple_bsize
-box_tuple_to_buf
-box_tuple_format
-box_tuple_format_new
-box_tuple_format_ref
-box_tuple_format_unref
-box_tuple_field
-box_tuple_iterator
-box_tuple_iterator_free
-box_tuple_position
-box_tuple_rewind
-box_tuple_seek
-box_tuple_next
-box_tuple_update
-box_tuple_upsert
 box_tuple_extract_key
 box_return_tuple
 box_space_id_by_name
