@@ -126,7 +126,7 @@ package: git_submodule_update
 deploy: package
 	echo ${GPG_SECRET_KEY} | base64 -d | gpg --batch --import || true
 	./tools/update_repo.sh -o=${OS} -d=${DIST} \
-		-b="${LIVE_REPO_S3_DIR}/${BUCKET}" build
+		-b="s3://tarantool_repo/check/${BUCKET}" build
 	./tools/check_package.sh "" ${OS}:${DIST} ${BUCKET}
 	if git name-rev --name-only --tags --no-undefined HEAD 2>/dev/null ; then \
 		./tools/update_repo.sh -o=${OS} -d=${DIST} \

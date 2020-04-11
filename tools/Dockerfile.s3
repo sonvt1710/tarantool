@@ -6,6 +6,7 @@ RUN ${PKG_TOOL} update -y >1.log 2>&1 || ( cat 1.log && false )
 RUN ${PKG_TOOL} install -y curl >2.log 2>&1 || ( cat 2.log && false )
 
 RUN curl -L https://tarantool.io/installer.sh >installer.sh 2>3.log || ( cat 3.log && false )
+RUN sed 's#download.tarantool.org#download-test.tarantool.org#g' -i installer.sh
 RUN chmod a+x installer.sh
 RUN sed "s#/bin/bash#/bin/bash -x#g" -i installer.sh
 
