@@ -7,9 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-space_by_id
-box_schema_version
-
 crypto_EVP_MD_CTX_new
 crypto_EVP_MD_CTX_free
 crypto_HMAC_CTX_new

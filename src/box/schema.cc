@@ -718,3 +718,12 @@ schema_find_name(enum schema_object_type type, uint32_t object_id)
 	return "(nil)";
 }
 
+extern "C" void **
+box_schema_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_schema_version,
+		(void *)space_by_id,
+	};
+	return syms;
+}
