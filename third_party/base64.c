@@ -321,3 +321,14 @@ base64_decode(const char *in_base64, int in_len,
 }
 
 /* }}} */
+
+void **
+base64_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)base64_bufsize,
+		(void *)base64_decode,
+		(void *)base64_encode,
+	};
+	return syms;
+}

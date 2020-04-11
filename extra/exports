@@ -2,9 +2,6 @@
 
 # FFI
 
-base64_decode
-base64_encode
-base64_bufsize
 SHA1internal
 guava
 random_bytes

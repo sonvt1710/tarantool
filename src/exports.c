@@ -48,6 +48,7 @@
  * Add new exporters here. Keep them in alphabetical order.
  */
 
+EXPORT(base64_export_syms);
 EXPORT(clock_export_syms);
 EXPORT(scramble_export_syms);
 EXPORT(tarantool_lua_export_syms);
@@ -56,6 +57,7 @@ void
 export_syms(void)
 {
 	void *syms[] = {
+		base64_export_syms,
 		clock_export_syms,
 		scramble_export_syms,
 		tarantool_lua_export_syms,
