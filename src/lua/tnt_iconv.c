@@ -19,3 +19,14 @@ tnt_iconv(iconv_t cd, char **inbuf, size_t *inbytesleft,
         return iconv(cd, inbuf, inbytesleft,
                      outbuf, outbytesleft);
 }
+
+void **
+tarantool_lua_tnt_iconv_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)tnt_iconv,
+		(void *)tnt_iconv_close,
+		(void *)tnt_iconv_open,
+	};
+	return syms;
+}
