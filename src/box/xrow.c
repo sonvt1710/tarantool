@@ -74,7 +74,7 @@ mp_encode_vclock_ignore0(char *data, const struct vclock *vclock)
 }
 
 static int
-mp_decode_vclock_ignore_0(const char **data, struct vclock *vclock)
+mp_decode_vclock_ignore0(const char **data, struct vclock *vclock)
 {
 	vclock_create(vclock);
 	if (mp_typeof(**data) != MP_MAP)
@@ -86,16 +86,12 @@ mp_decode_vclock_ignore_0(const char **data, struct vclock *vclock)
 		uint32_t id = mp_decode_uint(data);
 		if (mp_typeof(**data) != MP_UINT)
 			return -1;
+		int64_t lsn = mp_decode_uint(data);
 		/*
 		 * Skip vclock[0] coming from the remote
 		 * instances.
 		 */
-		if (id == 0) {
-			mp_next(data);
-			continue;
-		}
-		int64_t lsn = mp_decode_uint(data);
-		if (lsn > 0)
+		if (lsn > 0 && id != 0)
 			vclock_follow(vclock, id, lsn);
 	}
 	return 0;
@@ -1254,13 +1250,13 @@ xrow_decode_ballot(struct xrow_header *row, struct ballot *ballot)
 			ballot->is_loading = mp_decode_bool(&data);
 			break;
 		case IPROTO_BALLOT_VCLOCK:
-			if (mp_decode_vclock_ignore_0(&data,
-						      &ballot->vclock) != 0)
+			if (mp_decode_vclock_ignore0(&data,
+						     &ballot->vclock) != 0)
 				goto err;
 			break;
 		case IPROTO_BALLOT_GC_VCLOCK:
-			if (mp_decode_vclock_ignore_0(&data,
-						      &ballot->gc_vclock) != 0)
+			if (mp_decode_vclock_ignore0(&data,
+						     &ballot->gc_vclock) != 0)
 				goto err;
 			break;
 		default:
@@ -1405,7 +1401,7 @@ xrow_decode_subscribe(struct xrow_header *row, struct tt_uuid *replicaset_uuid,
 		case IPROTO_VCLOCK:
 			if (vclock == NULL)
 				goto skip;
-			if (mp_decode_vclock_ignore_0(&d, vclock) != 0) {
+			if (mp_decode_vclock_ignore0(&d, vclock) != 0) {
 				xrow_on_decode_err(data, end, ER_INVALID_MSGPACK,
 						   "invalid VCLOCK");
 				return -1;
