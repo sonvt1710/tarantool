@@ -29,6 +29,7 @@
  * SUCH DAMAGE.
  */
 #include "small/static.h"
+#include "small/ibuf.h"
 
 /**
  * Static inline functions like in static.h can't be exported.
@@ -39,4 +40,17 @@ void *
 lua_static_aligned_alloc(size_t size, size_t alignment)
 {
 	return static_aligned_alloc(size, alignment);
+}
+
+void **
+tarantool_lua_buffer_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)ibuf_create,
+		(void *)ibuf_reinit,
+		(void *)ibuf_destroy,
+		(void *)ibuf_reserve_slow,
+		(void *)lua_static_aligned_alloc,
+	};
+	return syms;
 }

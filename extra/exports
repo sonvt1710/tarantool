@@ -2,13 +2,6 @@
 
 # FFI
 
-ibuf_create
-ibuf_reinit
-ibuf_destroy
-ibuf_reserve_slow
-
-lua_static_aligned_alloc
-
 swim_is_configured
 swim_cfg
 swim_set_payload
