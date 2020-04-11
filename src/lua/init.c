@@ -730,3 +730,19 @@ tarantool_lua_free()
 	}
 #endif
 }
+
+void **
+tarantool_lua_socket_export_syms(void);
+
+/**
+ * Aggregator of all symbols defined in src/lua.
+ */
+void **
+tarantool_lua_export_syms(void)
+{
+	static void *syms[] = {
+		/* Submodules. */
+		(void *)tarantool_lua_socket_export_syms,
+	};
+	return syms;
+}

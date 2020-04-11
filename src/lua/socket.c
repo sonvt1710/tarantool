@@ -1105,3 +1105,13 @@ tarantool_lua_socket_init(struct lua_State *L)
 
 	lua_pop(L, 1); /* socket.internal */
 }
+
+void **
+tarantool_lua_socket_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)lbox_socket_local_resolve,
+		(void *)lbox_socket_nonblock,
+	};
+	return syms;
+}

@@ -2,8 +2,6 @@
 
 # FFI
 
-lbox_socket_local_resolve
-lbox_socket_nonblock
 base64_decode
 base64_encode
 base64_bufsize
