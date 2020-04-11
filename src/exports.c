@@ -49,6 +49,7 @@
  */
 
 EXPORT(base64_export_syms);
+EXPORT(box_error_export_syms);
 EXPORT(box_export_syms);
 EXPORT(box_index_export_syms);
 EXPORT(box_key_def_export_syms);
@@ -83,6 +84,7 @@ export_syms(void)
 {
 	void *syms[] = {
 		base64_export_syms,
+		box_error_export_syms,
 		box_export_syms,
 		box_index_export_syms,
 		box_key_def_export_syms,

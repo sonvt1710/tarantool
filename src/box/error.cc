@@ -290,3 +290,17 @@ BuildAccessDeniedError(const char *file, unsigned int line,
 		return e;
 	}
 }
+
+extern "C" void **
+box_error_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_error_clear,
+		(void *)box_error_code,
+		(void *)box_error_last,
+		(void *)box_error_message,
+		(void *)box_error_set,
+		(void *)box_error_type,
+	};
+	return syms;
+}
