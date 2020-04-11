@@ -43,6 +43,7 @@
 
 #include "lua/decimal.h" /* lua_pushdecimal() */
 #include "lib/core/decimal.h" /* decimal_unpack() */
+#include "mp_decimal.h"
 #include "lib/core/mp_extension_types.h"
 
 #include <fiber.h>
@@ -572,4 +573,20 @@ luaopen_msgpack(lua_State *L)
 {
 	luaL_msgpack_default = luaL_newserializer(L, "msgpack", msgpacklib);
 	return 1;
+}
+
+void **
+tarantool_lua_msgpack_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)decimal_unpack,
+		(void *)mp_encode_double,
+		(void *)mp_encode_float,
+		(void *)mp_encode_decimal,
+		(void *)mp_decode_double,
+		(void *)mp_decode_float,
+		(void *)mp_decode_extl,
+		(void *)mp_sizeof_decimal,
+	};
+	return syms;
 }

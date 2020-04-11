@@ -735,6 +735,9 @@ void **
 tarantool_lua_digest_export_syms(void);
 
 void **
+tarantool_lua_msgpack_export_syms(void);
+
+void **
 tarantool_lua_socket_export_syms(void);
 
 void **
@@ -749,6 +752,7 @@ tarantool_lua_export_syms(void)
 	static void *syms[] = {
 		/* Submodules. */
 		(void *)tarantool_lua_digest_export_syms,
+		(void *)tarantool_lua_msgpack_export_syms,
 		(void *)tarantool_lua_socket_export_syms,
 		(void *)tarantool_lua_tnt_iconv_export_syms,
 
