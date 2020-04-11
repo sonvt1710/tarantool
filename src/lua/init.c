@@ -746,6 +746,9 @@ tarantool_lua_socket_export_syms(void);
 void **
 tarantool_lua_tnt_iconv_export_syms(void);
 
+void **
+tarantool_lua_utils_export_syms(void);
+
 /**
  * Aggregator of all symbols defined in src/lua.
  */
@@ -759,6 +762,7 @@ tarantool_lua_export_syms(void)
 		(void *)tarantool_lua_msgpack_export_syms,
 		(void *)tarantool_lua_socket_export_syms,
 		(void *)tarantool_lua_tnt_iconv_export_syms,
+		(void *)tarantool_lua_utils_export_syms,
 
 		/* Own symbols. */
 		(void *)tarantool_lua_slab_cache,

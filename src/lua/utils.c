@@ -1288,3 +1288,27 @@ tarantool_lua_utils_init(struct lua_State *L)
 	assert(CTID_CONST_CHAR_PTR != 0);
 	return 0;
 }
+
+void **
+tarantool_lua_utils_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)luaL_cdef,
+		(void *)luaL_checkcdata,
+		(void *)luaL_checkint64,
+		(void *)luaL_checkuint64,
+		(void *)luaL_ctypeid,
+		(void *)luaL_iscallable,
+		(void *)luaL_pushcdata,
+		(void *)luaL_pushint64,
+		(void *)luaL_pushuint64,
+		(void *)luaL_setcdatagc,
+		(void *)luaL_toint64,
+		(void *)luaL_touint64,
+		(void *)luaT_call,
+		(void *)luaT_cpcall,
+		(void *)luaT_state,
+		(void *)luaT_tolstring,
+	};
+	return syms;
+}
