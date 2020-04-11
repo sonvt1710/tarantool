@@ -417,3 +417,13 @@ exception_init()
 }
 
 #undef BuildAlloc
+
+extern "C" void **
+exception_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)exception_get_int,
+		(void *)exception_get_string,
+	};
+	return syms;
+}

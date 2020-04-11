@@ -6,8 +6,6 @@ ibuf_create
 ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
-exception_get_string
-exception_get_int
 
 uuid_nil
 tt_uuid_create

@@ -51,6 +51,7 @@
 EXPORT(base64_export_syms);
 EXPORT(clock_export_syms);
 EXPORT(csv_export_syms);
+EXPORT(exception_export_syms);
 EXPORT(fiber_export_syms);
 EXPORT(port_export_syms);
 EXPORT(random_export_syms);
@@ -66,6 +67,7 @@ export_syms(void)
 		base64_export_syms,
 		clock_export_syms,
 		csv_export_syms,
+		exception_export_syms,
 		fiber_export_syms,
 		port_export_syms,
 		random_export_syms,
