@@ -95,6 +95,12 @@ trigger_add_unique(struct rlist *list, struct trigger *trigger)
 	trigger_add(list, trigger);
 }
 
+static inline int
+trigger_is_set(struct trigger *trigger)
+{
+	return !rlist_empty(&trigger->link);
+}
+
 static inline void
 trigger_clear(struct trigger *trigger)
 {
