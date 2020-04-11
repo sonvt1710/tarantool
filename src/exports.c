@@ -48,10 +48,13 @@
  * Add new exporters here. Keep them in alphabetical order.
  */
 
+EXPORT(clock_export_syms);
+
 void
 export_syms(void)
 {
 	void *syms[] = {
+		clock_export_syms,
 	};
 	const int func_count = sizeof(syms) / sizeof(syms[0]);
 	for (int i = 0; i < func_count; ++i)

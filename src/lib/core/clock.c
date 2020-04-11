@@ -108,3 +108,19 @@ clock_thread64(void)
 	return (uint64_t) clock() * 1000000000 / CLOCKS_PER_SEC;
 #endif
 }
+
+void **
+clock_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)clock_realtime,
+		(void *)clock_monotonic,
+		(void *)clock_process,
+		(void *)clock_thread,
+		(void *)clock_realtime64,
+		(void *)clock_monotonic64,
+		(void *)clock_process64,
+		(void *)clock_thread64,
+	};
+	return syms;
+}

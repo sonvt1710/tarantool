@@ -240,14 +240,6 @@ box_latch_delete
 box_latch_lock
 box_latch_trylock
 box_latch_unlock
-clock_realtime
-clock_monotonic
-clock_process
-clock_thread
-clock_realtime64
-clock_monotonic64
-clock_process64
-clock_thread64
 string_strip_helper
 
 # Lua / LuaJIT
