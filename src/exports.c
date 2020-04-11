@@ -49,12 +49,14 @@
  */
 
 EXPORT(clock_export_syms);
+EXPORT(scramble_export_syms);
 
 void
 export_syms(void)
 {
 	void *syms[] = {
 		clock_export_syms,
+		scramble_export_syms,
 	};
 	const int func_count = sizeof(syms) / sizeof(syms[0]);
 	for (int i = 0; i < func_count; ++i)

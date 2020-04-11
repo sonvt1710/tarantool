@@ -129,3 +129,12 @@ password_prepare(const char *password, int len, char *out, int out_len)
 
 	base64_encode((char *) hash2, SCRAMBLE_SIZE, out, out_len, 0);
 }
+
+void **
+scramble_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)password_prepare,
+	};
+	return syms;
+}
