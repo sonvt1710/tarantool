@@ -97,3 +97,12 @@ rand:
 	while (generated < size)
 		buf[generated++] = rand();
 }
+
+void **
+random_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)random_bytes,
+	};
+	return syms;
+}

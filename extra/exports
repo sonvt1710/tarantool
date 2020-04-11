@@ -2,7 +2,6 @@
 
 # FFI
 
-random_bytes
 fiber_time
 fiber_time64
 fiber_clock
