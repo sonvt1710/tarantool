@@ -6,16 +6,6 @@ ibuf_create
 ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
-title_update
-title_get
-title_set_interpretor_name
-title_get_interpretor_name
-title_set_script_name
-title_get_script_name
-title_set_custom
-title_get_custom
-title_set_status
-title_get_status
 tnt_iconv_open
 tnt_iconv_close
 tnt_iconv

@@ -197,3 +197,21 @@ DEFINE_STRING_ACCESSORS(interpretor_name)
 DEFINE_STRING_ACCESSORS(script_name)
 DEFINE_STRING_ACCESSORS(custom)
 DEFINE_STRING_ACCESSORS(status)
+
+void **
+title_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)title_get,
+		(void *)title_get_custom,
+		(void *)title_get_interpretor_name,
+		(void *)title_get_script_name,
+		(void *)title_get_status,
+		(void *)title_set_custom,
+		(void *)title_set_interpretor_name,
+		(void *)title_set_script_name,
+		(void *)title_set_status,
+		(void *)title_update,
+	};
+	return syms;
+}

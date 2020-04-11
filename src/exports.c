@@ -57,6 +57,7 @@ EXPORT(random_export_syms);
 EXPORT(salad_guava_export_syms);
 EXPORT(scramble_export_syms);
 EXPORT(tarantool_lua_export_syms);
+EXPORT(title_export_syms);
 
 void
 export_syms(void)
@@ -71,6 +72,7 @@ export_syms(void)
 		salad_guava_export_syms,
 		scramble_export_syms,
 		tarantool_lua_export_syms,
+		title_export_syms,
 	};
 	const int func_count = sizeof(syms) / sizeof(syms[0]);
 	for (int i = 0; i < func_count; ++i)
