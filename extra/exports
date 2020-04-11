@@ -8,8 +8,6 @@ ibuf_destroy
 ibuf_reserve_slow
 
 space_by_id
-space_run_triggers
-space_bsize
 box_schema_version
 
 crypto_EVP_MD_CTX_new

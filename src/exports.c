@@ -49,6 +49,7 @@
  */
 
 EXPORT(base64_export_syms);
+EXPORT(box_space_export_syms);
 EXPORT(clock_export_syms);
 EXPORT(crc32_export_syms);
 EXPORT(csv_export_syms);
@@ -71,6 +72,7 @@ export_syms(void)
 {
 	void *syms[] = {
 		base64_export_syms,
+		box_space_export_syms,
 		clock_export_syms,
 		crc32_export_syms,
 		csv_export_syms,

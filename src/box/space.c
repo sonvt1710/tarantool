@@ -773,3 +773,13 @@ generic_space_invalidate(struct space *space)
 }
 
 /* }}} */
+
+void **
+box_space_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)space_bsize,
+		(void *)space_run_triggers,
+	};
+	return syms;
+}
