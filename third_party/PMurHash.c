@@ -315,3 +315,14 @@ void PMurHash32_test(const void *key, int len, uint32_t seed, void *out)
 }
 
 /*---------------------------------------------------------------------------*/
+
+void **
+PMurHash32_export_syms(void)
+{
+  static void *syms[] = {
+    (void *)PMurHash32,
+    (void *)PMurHash32_Process,
+    (void *)PMurHash32_Result,
+  };
+  return syms;
+}

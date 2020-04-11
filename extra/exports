@@ -7,9 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-PMurHash32
-PMurHash32_Process
-PMurHash32_Result
 crc32_calc
 mp_encode_double
 mp_encode_float
