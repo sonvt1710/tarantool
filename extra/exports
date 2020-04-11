@@ -2,8 +2,6 @@
 
 # Module API
 
-box_key_def_new
-box_key_def_delete
 box_tuple_format_default
 box_tuple_new
 box_tuple_ref
@@ -25,8 +23,6 @@ box_tuple_next
 box_tuple_update
 box_tuple_upsert
 box_tuple_extract_key
-box_tuple_compare
-box_tuple_compare_with_key
 box_return_tuple
 box_space_id_by_name
 box_index_id_by_name

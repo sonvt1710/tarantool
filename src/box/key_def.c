@@ -891,3 +891,15 @@ key_validate_parts(const struct key_def *key_def, const char *key,
 	*key_end = key;
 	return 0;
 }
+
+void **
+box_key_def_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_key_def_delete,
+		(void *)box_key_def_new,
+		(void *)box_tuple_compare,
+		(void *)box_tuple_compare_with_key,
+	};
+	return syms;
+}
