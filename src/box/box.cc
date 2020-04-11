@@ -2544,3 +2544,25 @@ box_reset_stat(void)
 	engine_reset_stat();
 	space_foreach(box_reset_space_stat, NULL);
 }
+
+extern "C" void **
+box_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_delete,
+		(void *)box_index_id_by_name,
+		(void *)box_insert,
+		(void *)box_replace,
+		(void *)box_return_tuple,
+		(void *)box_select,
+		(void *)box_sequence_current,
+		(void *)box_sequence_next,
+		(void *)box_sequence_reset,
+		(void *)box_sequence_set,
+		(void *)box_space_id_by_name,
+		(void *)box_truncate,
+		(void *)box_update,
+		(void *)box_upsert,
+	};
+	return syms;
+}

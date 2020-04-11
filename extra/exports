@@ -2,20 +2,6 @@
 
 # Module API
 
-box_return_tuple
-box_space_id_by_name
-box_index_id_by_name
-box_select
-box_insert
-box_replace
-box_delete
-box_update
-box_upsert
-box_truncate
-box_sequence_next
-box_sequence_current
-box_sequence_set
-box_sequence_reset
 box_error_type
 box_error_code
 box_error_message
