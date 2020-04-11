@@ -7,7 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-crc32_calc
 mp_encode_double
 mp_encode_float
 mp_encode_decimal

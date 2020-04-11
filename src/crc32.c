@@ -48,3 +48,12 @@ crc32_init()
 	crc32_calc = &crc32c;
 #endif
 }
+
+void **
+crc32_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)&crc32_calc,
+	};
+	return syms;
+}
