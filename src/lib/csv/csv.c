@@ -409,3 +409,18 @@ csv_escape_field(struct csv *csv, const char *field,
 	*p = 0;
 	return p - dst;
 }
+
+void **
+csv_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)csv_create,
+		(void *)csv_destroy,
+		(void *)csv_escape_field,
+		(void *)csv_feed,
+		(void *)csv_iterator_create,
+		(void *)csv_next,
+		(void *)csv_setopt,
+	};
+	return syms;
+}

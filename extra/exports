@@ -6,13 +6,6 @@ ibuf_create
 ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
-csv_create
-csv_destroy
-csv_setopt
-csv_iterator_create
-csv_next
-csv_feed
-csv_escape_field
 title_update
 title_get
 title_set_interpretor_name
