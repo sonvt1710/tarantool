@@ -2,7 +2,6 @@
 
 # FFI
 
-guava
 random_bytes
 fiber_time
 fiber_time64

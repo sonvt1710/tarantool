@@ -61,3 +61,12 @@ guava(int64_t state, int32_t buckets)
 			return candidate;
 	}
 }
+
+void **
+salad_guava_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)guava,
+	};
+	return syms;
+}
