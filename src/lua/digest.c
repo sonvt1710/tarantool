@@ -100,3 +100,12 @@ tarantool_lua_digest_init(struct lua_State *L)
 	luaL_register_module(L, "digest", lua_digest_methods);
 	lua_pop(L, 1);
 };
+
+void **
+tarantool_lua_digest_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)SHA1internal,
+	};
+	return syms;
+}

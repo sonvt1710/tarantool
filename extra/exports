@@ -2,7 +2,6 @@
 
 # FFI
 
-SHA1internal
 guava
 random_bytes
 fiber_time
