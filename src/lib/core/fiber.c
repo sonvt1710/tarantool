@@ -1748,3 +1748,33 @@ int fiber_stat(fiber_stat_cb cb, void *cb_ctx)
 	}
 	return 0;
 }
+
+void **
+fiber_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)cord_slab_cache,
+		(void *)fiber_attr_new,
+		(void *)fiber_attr_delete,
+		(void *)fiber_attr_getstacksize,
+		(void *)fiber_attr_setstacksize,
+		(void *)fiber_cancel,
+		(void *)fiber_clock,
+		(void *)fiber_clock64,
+		(void *)fiber_is_cancelled,
+		(void *)fiber_join,
+		(void *)fiber_new,
+		(void *)fiber_new_ex,
+		(void *)fiber_reschedule,
+		(void *)fiber_self,
+		(void *)fiber_set_cancellable,
+		(void *)fiber_set_joinable,
+		(void *)fiber_sleep,
+		(void *)fiber_start,
+		(void *)fiber_time,
+		(void *)fiber_time64,
+		(void *)fiber_wakeup,
+		(void *)fiber_yield,
+	};
+	return syms;
+}

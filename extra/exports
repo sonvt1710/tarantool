@@ -2,10 +2,6 @@
 
 # FFI
 
-fiber_time
-fiber_time64
-fiber_clock
-fiber_clock64
 tarantool_lua_slab_cache
 ibuf_create
 ibuf_reinit
@@ -112,32 +108,12 @@ swim_member_is_payload_up_to_date
 # Module API
 
 _say
-fiber_attr_new
-fiber_attr_delete
-fiber_attr_setstacksize
-fiber_attr_getstacksize
-fiber_self
-fiber_new
-fiber_new_ex
-fiber_yield
-fiber_start
-fiber_wakeup
-fiber_cancel
-fiber_set_cancellable
-fiber_set_joinable
-fiber_join
-fiber_sleep
-fiber_is_cancelled
-fiber_time
-fiber_time64
-fiber_reschedule
 fiber_cond_new
 fiber_cond_delete
 fiber_cond_signal
 fiber_cond_broadcast
 fiber_cond_wait_timeout
 fiber_cond_wait
-cord_slab_cache
 coio_wait
 coio_close
 coio_call

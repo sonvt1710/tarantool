@@ -50,6 +50,7 @@
 
 EXPORT(base64_export_syms);
 EXPORT(clock_export_syms);
+EXPORT(fiber_export_syms);
 EXPORT(random_export_syms);
 EXPORT(salad_guava_export_syms);
 EXPORT(scramble_export_syms);
@@ -61,6 +62,7 @@ export_syms(void)
 	void *syms[] = {
 		base64_export_syms,
 		clock_export_syms,
+		fiber_export_syms,
 		random_export_syms,
 		salad_guava_export_syms,
 		scramble_export_syms,
