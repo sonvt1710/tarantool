@@ -124,3 +124,12 @@ tarantool_lua_error_init(struct lua_State *L)
 	CTID_CONST_STRUCT_ERROR_REF = luaL_ctypeid(L, "const struct error &");
 	assert(CTID_CONST_STRUCT_ERROR_REF != 0);
 }
+
+void **
+tarantool_lua_error_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)luaT_error,
+	};
+	return syms;
+}

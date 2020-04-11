@@ -738,6 +738,9 @@ void **
 tarantool_lua_digest_export_syms(void);
 
 void **
+tarantool_lua_error_export_syms(void);
+
+void **
 tarantool_lua_msgpack_export_syms(void);
 
 void **
@@ -759,6 +762,7 @@ tarantool_lua_export_syms(void)
 		/* Submodules. */
 		(void *)tarantool_lua_buffer_export_syms,
 		(void *)tarantool_lua_digest_export_syms,
+		(void *)tarantool_lua_error_export_syms,
 		(void *)tarantool_lua_msgpack_export_syms,
 		(void *)tarantool_lua_socket_export_syms,
 		(void *)tarantool_lua_tnt_iconv_export_syms,
