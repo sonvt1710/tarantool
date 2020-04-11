@@ -2,12 +2,6 @@
 
 # Module API
 
-fiber_cond_new
-fiber_cond_delete
-fiber_cond_signal
-fiber_cond_broadcast
-fiber_cond_wait_timeout
-fiber_cond_wait
 coio_wait
 coio_close
 coio_call

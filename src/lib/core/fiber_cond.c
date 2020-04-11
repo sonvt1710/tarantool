@@ -123,3 +123,17 @@ fiber_cond_wait_deadline(struct fiber_cond *c, double deadline)
 	double timeout = deadline - ev_monotonic_now(loop());
 	return fiber_cond_wait_timeout(c, timeout);
 }
+
+void **
+fiber_cond_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)fiber_cond_broadcast,
+		(void *)fiber_cond_delete,
+		(void *)fiber_cond_new,
+		(void *)fiber_cond_signal,
+		(void *)fiber_cond_wait,
+		(void *)fiber_cond_wait_timeout,
+	};
+	return syms;
+}
