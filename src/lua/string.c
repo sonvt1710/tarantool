@@ -115,3 +115,12 @@ string_strip_helper(const char *inp, size_t inp_len, const char *chars,
 
 	*newlen = inp_len - skipped;
 }
+
+void **
+tarantool_lua_string_export_syms(void)
+{
+	static void *syms[] = {
+		string_strip_helper,
+	};
+	return syms;
+}

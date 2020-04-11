@@ -1,9 +1,5 @@
 # Symbols exported by the main Tarantool executable
 
-# Module API
-
-string_strip_helper
-
 # Lua / LuaJIT
 
 lua_newstate

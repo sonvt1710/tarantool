@@ -747,6 +747,9 @@ void **
 tarantool_lua_socket_export_syms(void);
 
 void **
+tarantool_lua_string_export_syms(void);
+
+void **
 tarantool_lua_tnt_iconv_export_syms(void);
 
 void **
@@ -766,6 +769,7 @@ tarantool_lua_export_syms(void)
 		(void *)tarantool_lua_msgpack_export_syms,
 		(void *)tarantool_lua_socket_export_syms,
 		(void *)tarantool_lua_tnt_iconv_export_syms,
+		(void *)tarantool_lua_string_export_syms,
 		(void *)tarantool_lua_utils_export_syms,
 
 		/* Own symbols. */
