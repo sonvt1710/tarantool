@@ -941,3 +941,19 @@ txn_on_yield(struct trigger *trigger, void *event)
 	txn_set_flag(txn, TXN_IS_ABORTED_BY_YIELD);
 	return 0;
 }
+
+void **
+box_txn_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)box_txn,
+		(void *)box_txn_alloc,
+		(void *)box_txn_begin,
+		(void *)box_txn_commit,
+		(void *)box_txn_id,
+		(void *)box_txn_rollback,
+		(void *)box_txn_rollback_to_savepoint,
+		(void *)box_txn_savepoint,
+	};
+	return syms;
+}
