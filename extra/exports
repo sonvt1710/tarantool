@@ -7,8 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-uri_parse
-uri_format
 PMurHash32
 PMurHash32_Process
 PMurHash32_Result

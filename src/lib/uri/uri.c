@@ -6340,4 +6340,14 @@ uri_format(char *str, int len, const struct uri *uri, bool write_password)
 	return total;
 }
 
+void **
+uri_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)uri_format,
+		(void *)uri_parse,
+	};
+	return syms;
+}
+
 /* vim: set ft=ragel: */
