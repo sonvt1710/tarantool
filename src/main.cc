@@ -911,3 +911,13 @@ main(int argc, char **argv)
 	tarantool_free();
 	return exit_code;
 }
+
+extern "C" void **
+main_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)tarantool_exit,
+		(void *)tarantool_uptime,
+	};
+	return syms;
+}

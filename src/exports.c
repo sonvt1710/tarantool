@@ -54,6 +54,7 @@ EXPORT(crc32_export_syms);
 EXPORT(csv_export_syms);
 EXPORT(exception_export_syms);
 EXPORT(fiber_export_syms);
+EXPORT(main_export_syms);
 EXPORT(PMurHash32_export_syms);
 EXPORT(port_export_syms);
 EXPORT(random_export_syms);
@@ -75,6 +76,7 @@ export_syms(void)
 		csv_export_syms,
 		exception_export_syms,
 		fiber_export_syms,
+		main_export_syms,
 		PMurHash32_export_syms,
 		port_export_syms,
 		random_export_syms,

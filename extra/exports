@@ -7,8 +7,6 @@ ibuf_reinit
 ibuf_destroy
 ibuf_reserve_slow
 
-tarantool_uptime
-tarantool_exit
 space_by_id
 space_run_triggers
 space_bsize
