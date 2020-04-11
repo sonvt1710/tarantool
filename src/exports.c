@@ -52,6 +52,7 @@ EXPORT(base64_export_syms);
 EXPORT(box_schema_export_syms);
 EXPORT(box_space_export_syms);
 EXPORT(clock_export_syms);
+EXPORT(coio_export_syms);
 EXPORT(crc32_export_syms);
 EXPORT(crypto_export_syms);
 EXPORT(csv_export_syms);
@@ -79,6 +80,7 @@ export_syms(void)
 		box_schema_export_syms,
 		box_space_export_syms,
 		clock_export_syms,
+		coio_export_syms,
 		crc32_export_syms,
 		crypto_export_syms,
 		csv_export_syms,

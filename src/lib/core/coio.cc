@@ -806,3 +806,15 @@ coio_write_fd_timeout(int fd, const void *data, size_t size, ev_tstamp timeout)
 	}
 	return 0;
 }
+
+extern "C" void **
+coio_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)coio_call,
+		(void *)coio_close,
+		(void *)coio_getaddrinfo,
+		(void *)coio_wait,
+	};
+	return syms;
+}
