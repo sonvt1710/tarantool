@@ -597,3 +597,14 @@ box_lua_tuple_init(struct lua_State *L)
 	CTID_STRUCT_TUPLE_REF = luaL_ctypeid(L, "struct tuple &");
 	assert(CTID_STRUCT_TUPLE_REF != 0);
 }
+
+void **
+box_lua_tuple_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)luaT_checktuple,
+		(void *)luaT_istuple,
+		(void *)luaT_pushtuple,
+	};
+	return syms;
+}
