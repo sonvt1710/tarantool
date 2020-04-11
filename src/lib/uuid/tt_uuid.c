@@ -99,3 +99,18 @@ tt_uuid_from_strl(const char *in, size_t len, struct tt_uuid *uu)
 	snprintf(buf, sizeof(buf), "%.*s", (int) len, in);
 	return tt_uuid_from_string(buf, uu);
 }
+
+void **
+tt_uuid_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)tt_uuid_bswap,
+		(void *)tt_uuid_create,
+		(void *)tt_uuid_from_string,
+		(void *)tt_uuid_is_equal,
+		(void *)tt_uuid_is_nil,
+		(void *)tt_uuid_str,
+		(void *)&uuid_nil,
+	};
+	return syms;
+}
