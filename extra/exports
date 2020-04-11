@@ -2,7 +2,6 @@
 
 # Module API
 
-error_set_prev
 box_latch_new
 box_latch_delete
 box_latch_lock

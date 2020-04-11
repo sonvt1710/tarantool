@@ -120,3 +120,11 @@ error_vformat_msg(struct error *e, const char *format, va_list ap)
 	vsnprintf(e->errmsg, sizeof(e->errmsg), format, ap);
 }
 
+void **
+diag_export_syms(void)
+{
+	static void *syms[] = {
+		(void *)error_set_prev,
+	};
+	return syms;
+}
