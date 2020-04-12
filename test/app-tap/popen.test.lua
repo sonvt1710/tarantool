@@ -335,6 +335,45 @@ local function test_shell_invalid_args(test)
     end
 end
 
+local function test_new_invalid_args(test)
+    local function argerr(arg, typename)
+        if arg == 'argv' then
+            return ('popen.new: wrong parameter "%s": expected table, got %s')
+                :format(arg, typename)
+        else
+            error('Invalid argument check')
+        end
+    end
+
+    local cases1 = {
+        [{ nil }] = argerr('argv', 'nil'),
+        [{ true }] = argerr('argv', 'boolean'),
+        [{ false }] = argerr('argv', 'boolean'),
+        [{ 0 }] = argerr('argv', 'number'),
+        [{ '' }] = argerr('argv', 'string'),
+        [{ { } }] = nil, -- table is ok, but not an empty one, to be checked later
+        [{ popen.shell }] = argerr('argv', 'function'),
+        [{ io.stdin }] = argerr('argv', 'userdata'),
+        [{ coroutine.create(function() end) }] = argerr('argv', 'thread'),
+        [{ require('ffi').new('void *') }] = argerr('argv', 'cdata'),
+    }
+    local plan = 0
+    for _, cases in pairs({cases1}) do
+        for _, _ in pairs(cases) do plan = plan + 2 end
+    end
+
+    test:plan(plan)
+
+    for args, err in pairs(cases1) do
+        local arg = unpack(args)
+        local ok, res = pcall(popen.new, arg)
+        test:ok(not ok, ('new argv (ok): expected table, got %s')
+                        :format(type(arg)))
+        test:ok(res:match(err), ('new argv (err): expected table, got %s')
+                                :format(type(arg)))
+    end
+end
+
 local function test_methods_on_closed_handle(test)
     local methods = {
         signal    = { popen.signal.SIGTERM },
@@ -399,7 +438,7 @@ local function test_methods_on_invalid_handle(test)
 end
 
 local test = tap.test('popen')
-test:plan(9)
+test:plan(10)
 
 test:test('trivial_echo_output', test_trivial_echo_output)
 test:test('kill_child_process', test_kill_child_process)
@@ -408,6 +447,7 @@ test:test('read_write', test_read_write)
 test:test('read_timeout', test_read_timeout)
 test:test('read_chunk', test_read_chunk)
 test:test('shell_invalid_args', test_shell_invalid_args)
+test:test('new_invalid_args', test_new_invalid_args)
 test:test('methods_on_closed_handle', test_methods_on_closed_handle)
 test:test('methods_on_invalid_handle', test_methods_on_invalid_handle)
 
