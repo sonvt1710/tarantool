@@ -200,7 +200,7 @@ struct popen_lua_action_def {
 };
 
 #define POPEN_LUA_STREAM_INHERIT	"inherit"
-#define POPEN_LUA_STREAM_DEVNULL	"/dev/null"
+#define POPEN_LUA_STREAM_DEVNULL	"devnull"
 #define POPEN_LUA_STREAM_CLOSE		"close"
 #define POPEN_LUA_STREAM_PIPE		"pipe"
 
