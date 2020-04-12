@@ -362,8 +362,44 @@ local function test_methods_on_closed_handle(test)
     end
 end
 
+local function test_methods_on_invalid_handle(test)
+    local methods = {
+        signal    = { popen.signal.SIGTERM },
+        terminate = nil, -- TODO: test is disabled due to assert
+        kill      = nil, -- TODO: test is disabled due to assert
+        wait      = { },
+        read      = { },
+        write     = { 'popen' },
+        info      = { },
+        close     = { },
+    }
+    local plan = 0
+    for _, _ in pairs(methods) do plan = plan + 4 end
+    test:plan(plan)
+
+    local ph = popen.shell('echo -n 1 2 3 4 5', 'r')
+
+    for method, args in pairs(methods) do
+        local ok, err = pcall(ph[method])
+        test:ok(not ok, ('%s (ok) no handle and args'):format(method))
+        -- XXX: kill and terminate dumps signal usage, so method name is omitted
+        test:ok(err:match('Bad params, use: ph:'),
+                ('%s (err) no handle and args'):format(method))
+    end
+
+    local bh = { } -- a table looks like a totally bad handler
+
+    for method, args in pairs(methods) do
+        local ok, err = pcall(ph[method], bh, unpack(args))
+        test:ok(not ok, ('%s (ok) on invalid handle'):format(method))
+        -- XXX: kill and terminate dumps signal usage, so method name is omitted
+        test:ok(err:match('Bad params, use: ph:'),
+                ('%s (err) on invalid handle'):format(method))
+    end
+end
+
 local test = tap.test('popen')
-test:plan(8)
+test:plan(9)
 
 test:test('trivial_echo_output', test_trivial_echo_output)
 test:test('kill_child_process', test_kill_child_process)
@@ -373,6 +409,7 @@ test:test('read_timeout', test_read_timeout)
 test:test('read_chunk', test_read_chunk)
 test:test('shell_invalid_args', test_shell_invalid_args)
 test:test('methods_on_closed_handle', test_methods_on_closed_handle)
+test:test('methods_on_invalid_handle', test_methods_on_invalid_handle)
 
 -- Testing plan
 --
@@ -408,37 +445,13 @@ test:test('methods_on_closed_handle', test_methods_on_closed_handle)
 --     - bad handle
 --     - bad mode
 --   - signal
---     - zero args (no even handle)
---     - bad handle
 --     - signal
 --       - wrong type
 --       - unknown value
---   - terminate
---     - zero args (no even handle)
---     - bad handle
---   - kill
---     - zero args (no even handle)
---     - bad handle
---   - status
---     - zero args (no even handle)
---     - bad handle
---   - wait
---     - zero args (no even handle)
---     - bad handle
 --   - read
---     - zero args (no even handle)
---     - bad handle
 --     - FIXME: more cases
 --   - write
---     - zero args (no even handle)
---     - bad handle
 --     - FIXME: more cases
---   - info
---     - zero args (no even handle)
---     - bad handle
---   - close
---     - zero args (no even handle)
---     - bad handle
 --   - __index
 --     - zero args (no even handle)
 --     - bad handle
