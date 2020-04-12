@@ -442,13 +442,9 @@ luaL_replace_safe(struct lua_State *L, int idx)
 	 * lua_replace() on 'top' index copy a value to itself
 	 * first and then pops it from the stack.
 	 */
-	if (lua_gettop(L) > idx)
+	/* XXX: what if idx > top? */
+	if (lua_gettop(L) != idx)
 		lua_replace(L, idx);
-	/*
-	 * XXX: what if idx > top?
-	 * An invalid (e.g. unmarked, dead, etc) slot copy occurs
-	 */
-	assert(lua_gettop(L) < idx);
 }
 
 /**
