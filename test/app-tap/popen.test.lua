@@ -335,8 +335,35 @@ local function test_shell_invalid_args(test)
     end
 end
 
+local function test_methods_on_closed_handle(test)
+    local methods = {
+        signal    = { popen.signal.SIGTERM },
+        terminate = { },
+        kill      = { },
+        wait      = { },
+        read      = { },
+        write     = { 'popen' },
+        info      = { },
+        close     = nil -- close call is idempotent one
+    }
+    local plan = 0
+    for _, _ in pairs(methods) do plan = plan + 2 end
+    test:plan(plan)
+
+    local ph = popen.shell('echo -n 1 2 3 4 5', 'r')
+    ph:close()
+
+    for method, args in pairs(methods) do
+        -- TODO: method throws when called on closed handle
+        local ok, err = ph[method](ph, unpack(args))
+        test:ok(not ok, ('%s (ok) on closed handle'):format(method))
+        test:ok(err:match('popen: attempt to operate on a closed handle'),
+                ('%s (err) on closed handle'):format(method))
+    end
+end
+
 local test = tap.test('popen')
-test:plan(7)
+test:plan(8)
 
 test:test('trivial_echo_output', test_trivial_echo_output)
 test:test('kill_child_process', test_kill_child_process)
@@ -345,6 +372,7 @@ test:test('read_write', test_read_write)
 test:test('read_timeout', test_read_timeout)
 test:test('read_chunk', test_read_chunk)
 test:test('shell_invalid_args', test_shell_invalid_args)
+test:test('methods_on_closed_handle', test_methods_on_closed_handle)
 
 -- Testing plan
 --
